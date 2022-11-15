@@ -11,3 +11,8 @@ int main(int argc, char* argv[])
 {
     std::cout << "Nothing implemented, yet" << std::endl;
 }
+
+int myTest(void)
+{
+    return 4;
+}
