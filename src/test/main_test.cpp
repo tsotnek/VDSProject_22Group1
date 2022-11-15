@@ -9,7 +9,9 @@ int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
 
-    ASSERT_EQ(myTest(), 5) << "myTest does not return 5";
+    TEST(myTests, test1) {
+        ASSERT_EQ(myTest(), 5) << "myTest does not return 5";
+    }
 
     return RUN_ALL_TESTS();
 }
