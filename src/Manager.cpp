@@ -50,7 +50,6 @@ size_t ClassProject::Manager::uniqueTableSize() { return 0; }
 
 ClassProject::Manager::Manager(void)
 {
-    /*
     uniqueTable.push_back(ClassProject::unique_table_entry());
     uniqueTable.push_back(ClassProject::unique_table_entry());
     uniqueTable[0].id = 1;
@@ -63,7 +62,6 @@ ClassProject::Manager::Manager(void)
     uniqueTable[1].topVar = 1;
     uniqueTable[0].label = "False";
     uniqueTable[1].label = "True";
-    */
 }
 
 ClassProject::Manager::~Manager() {}
