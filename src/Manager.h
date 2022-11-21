@@ -5,63 +5,73 @@
 #ifndef VDSPROJECT_MANAGER_H
 #define VDSPROJECT_MANAGER_H
 
+#include <vector>
+#include <string>
+
 #include "ManagerInterface.h"
 
+
 namespace ClassProject {
+
+    struct unique_table_entry {
+        BDD_ID id;
+        BDD_ID high;
+        BDD_ID low;
+        BDD_ID topVar;
+        std::string label;
+    };
+
     class Manager: public ManagerInterface {
         public:
-            int testval_literal;
+            std::vector<unique_table_entry> uniqueTable;
 
-            int testval() {return testval_literal;}
-            void testval(int t) {testval_literal = t;}
+            BDD_ID createVar(const std::string &label) override;
 
+            const BDD_ID &True() override;
 
-            Manager() {}
-            ~Manager() {}
+            const BDD_ID &False() override;
 
-            BDD_ID createVar(const std::string &label);
+            bool isConstant(BDD_ID f) override;
 
-            const BDD_ID &True();
+            bool isVariable(BDD_ID x) override;
 
-            const BDD_ID &False();
+            BDD_ID topVar(BDD_ID f) override;
 
-            bool isConstant(BDD_ID f);
+            BDD_ID ite(BDD_ID i, BDD_ID t, BDD_ID e) override;
 
-            bool isVariable(BDD_ID x);
+            BDD_ID coFactorTrue(BDD_ID f, BDD_ID x) override;
 
-            BDD_ID topVar(BDD_ID f);
+            BDD_ID coFactorFalse(BDD_ID f, BDD_ID x) override;
 
-            BDD_ID ite(BDD_ID i, BDD_ID t, BDD_ID e);
+            BDD_ID coFactorTrue(BDD_ID f) override;
 
-            BDD_ID coFactorTrue(BDD_ID f, BDD_ID x);
+            BDD_ID coFactorFalse(BDD_ID f) override;
 
-            BDD_ID coFactorFalse(BDD_ID f, BDD_ID x);
+            BDD_ID neg(BDD_ID a) override;
 
-            BDD_ID coFactorTrue(BDD_ID f);
+            BDD_ID and2(BDD_ID a, BDD_ID b) override;
 
-            BDD_ID coFactorFalse(BDD_ID f);
+            BDD_ID or2(BDD_ID a, BDD_ID b) override;
 
-            BDD_ID neg(BDD_ID a);
+            BDD_ID xor2(BDD_ID a, BDD_ID b) override;
 
-            BDD_ID and2(BDD_ID a, BDD_ID b);
+            BDD_ID nand2(BDD_ID a, BDD_ID b) override;
 
-            BDD_ID or2(BDD_ID a, BDD_ID b);
+            BDD_ID nor2(BDD_ID a, BDD_ID b) override;
 
-            BDD_ID xor2(BDD_ID a, BDD_ID b);
+            BDD_ID xnor2(BDD_ID a, BDD_ID b) override;
 
-            BDD_ID nand2(BDD_ID a, BDD_ID b);
+            std::string getTopVarName(const BDD_ID &root) override;
 
-            BDD_ID nor2(BDD_ID a, BDD_ID b);
+            void findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root) override;
 
-            BDD_ID xnor2(BDD_ID a, BDD_ID b);
+            void findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root) override;
 
-            std::string getTopVarName(const BDD_ID &root);
+            size_t uniqueTableSize() override;
 
-            void findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root);
+            Manager(void);
 
-            void findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root);
-
-            size_t uniqueTableSize();
+            ~Manager();
     };
 }
 
