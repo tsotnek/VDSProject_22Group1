@@ -20,8 +20,8 @@ jobs:
       run: mkdir build && cd build && cmake ../
 
     - name: Build
-      run: make
+      run: cd build && make
 
     - name: Test
-      run: ./src/test/VDSProject_test
+      run: ./build/src/test/VDSProject_test
 
