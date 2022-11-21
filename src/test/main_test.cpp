@@ -10,7 +10,8 @@
 
 TEST(myTests, test1) {
         ClassProject::Manager* myTest;
-        ASSERT_EQ(myTest->a, 1) << "a is not 1";
+        myTest->testval(1);
+        ASSERT_EQ(myTest->testval(), 1) << "a is not 1";
     }
 
 int main(int argc, char* argv[])

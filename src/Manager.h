@@ -10,9 +10,13 @@
 namespace ClassProject {
     class Manager: public ManagerInterface {
         public:
-            int a;
+            int testval_literal;
 
-            Manager() {a = 1;}
+            int testval() {return testval_literal;}
+            void testval(int t) {testval_literal = t;}
+
+
+            Manager() {}
             ~Manager() {}
 
             BDD_ID createVar(const std::string &label);
