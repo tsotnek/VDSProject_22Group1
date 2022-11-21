@@ -10,7 +10,7 @@
 
 TEST(myTests, test1) {
         ClassProject::Manager* myTest;
-        myTest->testval(1);
+        myTest->testval(0);
         ASSERT_EQ(myTest->testval(), 1) << "a is not 1";
     }
 
