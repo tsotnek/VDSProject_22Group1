@@ -4,14 +4,19 @@
 
 
 #include "Tests.h"
+#include "../Manager.h"
+#include "../ManagerInterface.h"
+
+
+TEST(myTests, test1) {
+        ClassProject::Manager* myTest;
+        ASSERT_EQ(myTest->a, 1) << "a is not 1";
+    }
 
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
 
-    TEST(myTests, test1) {
-        ASSERT_EQ(myTest(), 5) << "myTest does not return 5";
-    }
 
     return RUN_ALL_TESTS();
 }
