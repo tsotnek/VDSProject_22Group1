@@ -16,12 +16,12 @@ ClassProject::BDD_ID ClassProject::Manager::createVar(const std::string &label)
 
 const ClassProject::BDD_ID &ClassProject::Manager::True() 
 {
-    return 2; 
+    return uniqueTable[1].id; 
 }
 
 const ClassProject::BDD_ID &ClassProject::Manager::False() 
 { 
-    return 1; 
+    return uniqueTable[0].id; 
 }
 
 bool ClassProject::Manager::isConstant(ClassProject::BDD_ID f) 
