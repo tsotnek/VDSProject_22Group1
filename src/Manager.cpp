@@ -3,18 +3,41 @@
 
 #include "Manager.h"
 
+/**
+ * CreateVar method takes one parameter 
+ */
+ClassProject::BDD_ID ClassProject::Manager::createVar(const std::string &label) 
+{
+    uniqueTable.push_back(ClassProject::unique_table_entry());
+    uniqueTable.back().id = uniqueTable.size();
+    uniqueTable.back().label = label;
+    return uniqueTable.back().id;
+}
 
-ClassProject::BDD_ID ClassProject::Manager::createVar(const std::string &label) { return 0; }
+const ClassProject::BDD_ID &ClassProject::Manager::True() 
+{
+    return 2; 
+}
 
-const ClassProject::BDD_ID &ClassProject::Manager::True() { return 0; }
+const ClassProject::BDD_ID &ClassProject::Manager::False() 
+{ 
+    return 1; 
+}
 
-const ClassProject::BDD_ID &ClassProject::Manager::False() { return 0; }
+bool ClassProject::Manager::isConstant(ClassProject::BDD_ID f) 
+{
+    return (f == 1 || f == 2); 
+}
 
-bool ClassProject::Manager::isConstant(ClassProject::BDD_ID f) { return 0; }
+bool ClassProject::Manager::isVariable(ClassProject::BDD_ID x) 
+{
+    return (uniqueTable[x-1].id == uniqueTable[x-1].topVar);
+}
 
-bool ClassProject::Manager::isVariable(ClassProject::BDD_ID x) { return 0; }
-
-ClassProject::BDD_ID ClassProject::Manager::topVar(ClassProject::BDD_ID f) { return 0; }
+ClassProject::BDD_ID ClassProject::Manager::topVar(ClassProject::BDD_ID f) 
+{
+    return uniqueTable[f-1].topVar; 
+}
 
 ClassProject::BDD_ID ClassProject::Manager::ite(ClassProject::BDD_ID i, ClassProject::BDD_ID t, ClassProject::BDD_ID e) { return 0; }
 
@@ -40,13 +63,19 @@ ClassProject::BDD_ID ClassProject::Manager::nor2(ClassProject::BDD_ID a, ClassPr
 
 ClassProject::BDD_ID ClassProject::Manager::xnor2(ClassProject::BDD_ID a, ClassProject::BDD_ID b) { return 0; }
 
-std::string ClassProject::Manager::getTopVarName(const ClassProject::BDD_ID &root) { return 0; }
+std::string ClassProject::Manager::getTopVarName(const ClassProject::BDD_ID &root) 
+{
+    return uniqueTable[uniqueTable[root-1].topVar].label;
+}
 
 void ClassProject::Manager::findNodes(const ClassProject::BDD_ID &root, std::set<ClassProject::BDD_ID> &nodes_of_root) { }
 
 void ClassProject::Manager::findVars(const ClassProject::BDD_ID &root, std::set<ClassProject::BDD_ID> &vars_of_root) { }
 
-size_t ClassProject::Manager::uniqueTableSize() { return 0; }
+size_t ClassProject::Manager::uniqueTableSize() 
+{
+    return uniqueTable.size();
+}
 
 ClassProject::Manager::Manager(void)
 {
