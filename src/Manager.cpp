@@ -51,17 +51,19 @@ ClassProject::BDD_ID ClassProject::Manager::ite(ClassProject::BDD_ID i, ClassPro
     topVar = (t > 2 && uniqueTable[t-1].topVar < topVar) ? uniqueTable[t-1].topVar : topVar;
     topVar = (e > 2 && uniqueTable[e-1].topVar < topVar) ? uniqueTable[e-1].topVar : topVar;
 
+    return 0;
 }
 
 ClassProject::BDD_ID ClassProject::Manager::coFactorTrue(ClassProject::BDD_ID f, ClassProject::BDD_ID x) 
 {
     if (f == x) return uniqueTable[f-1].high;
-    
+
+    return 0;
 }
 
 ClassProject::BDD_ID ClassProject::Manager::coFactorFalse(ClassProject::BDD_ID f, ClassProject::BDD_ID x) { return 0; }
 
-ClassProject::BDD_ID ClassProject::Manager::coFactorTrue(ClassProject::BDD_ID f) 
+ClassProject::BDD_ID ClassProject::Manager::coFactorTrue(ClassProject::BDD_ID f)  { return 0; }
 
 ClassProject::BDD_ID ClassProject::Manager::coFactorFalse(ClassProject::BDD_ID f) { return 0; }
 
