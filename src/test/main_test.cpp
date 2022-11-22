@@ -19,18 +19,17 @@ TEST(managerTests, createVarTest)
 {
     ClassProject::Manager* testObj = new ClassProject::Manager();
     testObj->createVar("testVar");
-    ASSERT_EQ(testObj->uniqueTable[2].id, 3) << "Did not create";
-    ASSERT_EQ(testObj->uniqueTable[2].label, "testVar") << "Did not create";
+    ASSERT_EQ(testObj->uniqueTable.back().label, "testVar") << "Variable was not created";
 }
 
 TEST(managerTests, trivialTest)
 {
     ClassProject::Manager* testObj = new ClassProject::Manager();
-    testObj->createVar("testVar");
+    ClassProject::BDD_ID testVar = testObj->createVar("testVar");
     ASSERT_EQ(testObj->uniqueTableSize(),testObj->uniqueTable.size()) << "Wrong size";
-    ASSERT_EQ(testObj->True(), 2) << "Wrong id for True";
-    ASSERT_EQ(testObj->False(), 1) << "Wrong id for False";
-    //ASSERT_EQ(testObj->isVariable(3), true) << "Not a variable";
+    ASSERT_EQ(testObj->True(), 1) << "Wrong id for True";
+    ASSERT_EQ(testObj->False(), 0) << "Wrong id for False";
+    ASSERT_EQ(testObj->isVariable(testVar), true) << "Incorrect assesment of variable";
 }
 
 int main(int argc, char* argv[])

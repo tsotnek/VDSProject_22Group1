@@ -14,9 +14,8 @@
 namespace ClassProject {
 
     struct unique_table_entry {
-        BDD_ID id;
-        BDD_ID high;
         BDD_ID low;
+        BDD_ID high;
         BDD_ID topVar;
         std::string label;
     };
