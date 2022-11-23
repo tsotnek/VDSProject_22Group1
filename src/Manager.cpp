@@ -9,7 +9,7 @@
  */
 ClassProject::BDD_ID ClassProject::Manager::createVar(const std::string &label) 
 {
-    uniqueTable.push_back(ClassProject::unique_table_entry {0,1,uniqueTableSize(),label});
+    uniqueTable.push_back(unique_table_entry {0,1,uniqueTableSize(),label});
     return uniqueTable.back().topVar;
 }
 
@@ -61,7 +61,7 @@ ClassProject::BDD_ID ClassProject::Manager::ite(ClassProject::BDD_ID i, ClassPro
     if (i == False()) return e;
     if (i == True()) return t;
 
-    ClassProject::BDD_ID tv = topVar(i);
+    BDD_ID tv = topVar(i);
     tv = (!isConstant(t) && topVar(t) < tv) ? topVar(t) : tv;
     tv = (!isConstant(e) && topVar(t) < tv) ? topVar(e) : tv;
 
@@ -125,8 +125,8 @@ size_t ClassProject::Manager::uniqueTableSize()
  */
 ClassProject::Manager::Manager(void)
 {
-    uniqueTable.push_back(ClassProject::unique_table_entry {0,0,0,"False"});
-    uniqueTable.push_back(ClassProject::unique_table_entry {1,1,1,"True"});
+    uniqueTable.push_back(unique_table_entry {0,0,0,"False"});
+    uniqueTable.push_back(unique_table_entry {1,1,1,"True"});
 }
 
 ClassProject::Manager::~Manager() {}
