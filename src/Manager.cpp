@@ -1,13 +1,14 @@
 #include <vector>
 #include <string>
-
+#include <iostream>
 #include "Manager.h"
 
+using namespace ClassProject;
 /**
  * Creates a new variable at the end of the unique table
  * @param label Label for the variable
  */
-ClassProject::BDD_ID ClassProject::Manager::createVar(const std::string &label) 
+BDD_ID Manager::createVar(const std::string &label) 
 {
     uniqueTable.push_back(unique_table_entry {0,1,uniqueTableSize(),label});
     return uniqueTable.back().topVar;
@@ -16,7 +17,7 @@ ClassProject::BDD_ID ClassProject::Manager::createVar(const std::string &label)
 /**
  * Returns the id of the "True" case
  */
-const ClassProject::BDD_ID &ClassProject::Manager::True() 
+const BDD_ID &Manager::True() 
 {
     return uniqueTable[1].topVar; 
 }
@@ -24,7 +25,7 @@ const ClassProject::BDD_ID &ClassProject::Manager::True()
 /**
  * Returns the id of the "False" case
  */
-const ClassProject::BDD_ID &ClassProject::Manager::False() 
+const BDD_ID &Manager::False() 
 { 
     return uniqueTable[0].topVar; 
 }
@@ -33,7 +34,7 @@ const ClassProject::BDD_ID &ClassProject::Manager::False()
  * Evaluates if id represents a constant
  * @param f id to evaluate
  */
-bool ClassProject::Manager::isConstant(ClassProject::BDD_ID f) 
+bool Manager::isConstant(BDD_ID f) 
 {
     return (f < 1); 
 }
@@ -42,7 +43,7 @@ bool ClassProject::Manager::isConstant(ClassProject::BDD_ID f)
  * Evaluates if id represents a variable
  * @param x id to evaluate
  */
-bool ClassProject::Manager::isVariable(ClassProject::BDD_ID x) 
+bool Manager::isVariable(BDD_ID x) 
 {
     return (topVar(x) == x);
 }
@@ -51,12 +52,12 @@ bool ClassProject::Manager::isVariable(ClassProject::BDD_ID x)
  * Returns top variable of id
  * @param id id to evaluate
  */
-ClassProject::BDD_ID ClassProject::Manager::topVar(ClassProject::BDD_ID f) 
+BDD_ID Manager::topVar(ClassProject::BDD_ID f) 
 {
     return uniqueTable[f].topVar; 
 }
 
-ClassProject::BDD_ID ClassProject::Manager::ite(ClassProject::BDD_ID i, ClassProject::BDD_ID t, ClassProject::BDD_ID e) 
+BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e) 
 {
     if (i == False()) return e;
     if (i == True()) return t;
@@ -68,54 +69,54 @@ ClassProject::BDD_ID ClassProject::Manager::ite(ClassProject::BDD_ID i, ClassPro
     return 0;
 }
 
-ClassProject::BDD_ID ClassProject::Manager::coFactorTrue(ClassProject::BDD_ID f, ClassProject::BDD_ID x) 
+BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x) 
 {
     if (f == x) return uniqueTable[f].high;
 
     return 0;
 }
 
-ClassProject::BDD_ID ClassProject::Manager::coFactorFalse(ClassProject::BDD_ID f, ClassProject::BDD_ID x) { return 0; }
+BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x) { return 0; }
 
-ClassProject::BDD_ID ClassProject::Manager::coFactorTrue(ClassProject::BDD_ID f)  { return 0; }
+BDD_ID Manager::coFactorTrue(BDD_ID f)  { return 0; }
 
-ClassProject::BDD_ID ClassProject::Manager::coFactorFalse(ClassProject::BDD_ID f) { return 0; }
+BDD_ID Manager::coFactorFalse(BDD_ID f) { return 0; }
 
-ClassProject::BDD_ID ClassProject::Manager::neg(ClassProject::BDD_ID a) { return 0; }
+BDD_ID Manager::neg(BDD_ID a) { return 0; }
 
-ClassProject::BDD_ID ClassProject::Manager::and2(ClassProject::BDD_ID a, ClassProject::BDD_ID b) { return 0; }
+BDD_ID Manager::and2(BDD_ID a, BDD_ID b) { return 0; }
 
-ClassProject::BDD_ID ClassProject::Manager::or2(ClassProject::BDD_ID a, ClassProject::BDD_ID b) 
+BDD_ID Manager::or2(BDD_ID a, BDD_ID b) 
 {
     return ite(a,True(),b);
 }
 
-ClassProject::BDD_ID ClassProject::Manager::xor2(ClassProject::BDD_ID a, ClassProject::BDD_ID b) { return 0; }
+BDD_ID Manager::xor2(BDD_ID a, BDD_ID b) { return 0; }
 
-ClassProject::BDD_ID ClassProject::Manager::nand2(ClassProject::BDD_ID a, ClassProject::BDD_ID b) { return 0; }
+BDD_ID Manager::nand2(BDD_ID a, BDD_ID b) { return 0; }
 
-ClassProject::BDD_ID ClassProject::Manager::nor2(ClassProject::BDD_ID a, ClassProject::BDD_ID b) { return 0; }
+BDD_ID Manager::nor2(BDD_ID a, BDD_ID b) { return 0; }
 
-ClassProject::BDD_ID ClassProject::Manager::xnor2(ClassProject::BDD_ID a, ClassProject::BDD_ID b) { return 0; }
+BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b) { return 0; }
 
 /**
  * Returns label of top variable of id
  * @param root id to be evaluated
  */
-std::string ClassProject::Manager::getTopVarName(const ClassProject::BDD_ID &root) 
+std::string Manager::getTopVarName(const BDD_ID &root) 
 {
     return uniqueTable[uniqueTable[root].topVar].label;
 }
 
-void ClassProject::Manager::findNodes(const ClassProject::BDD_ID &root, std::set<ClassProject::BDD_ID> &nodes_of_root) { }
+void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root) { }
 
-void ClassProject::Manager::findVars(const ClassProject::BDD_ID &root, std::set<ClassProject::BDD_ID> &vars_of_root) { }
+void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root) { }
 
 
 /**
  * Returns number of current entries in the unique table
  */
-size_t ClassProject::Manager::uniqueTableSize() 
+size_t Manager::uniqueTableSize() 
 {
     return uniqueTable.size();
 }
@@ -123,10 +124,13 @@ size_t ClassProject::Manager::uniqueTableSize()
 /**
  * Constructor creates entries for the "True" and "False" cases in the unique table
  */
-ClassProject::Manager::Manager(void)
+Manager::Manager(void)
 {
     uniqueTable.push_back(unique_table_entry {0,0,0,"False"});
     uniqueTable.push_back(unique_table_entry {1,1,1,"True"});
 }
 
-ClassProject::Manager::~Manager() {}
+Manager::~Manager() 
+{
+    std::cout << "Manager class destroyed!" << std::endl; 
+}
