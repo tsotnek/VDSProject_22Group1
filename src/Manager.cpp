@@ -35,7 +35,7 @@ const ClassProject::BDD_ID &ClassProject::Manager::False()
  */
 bool ClassProject::Manager::isConstant(ClassProject::BDD_ID f) 
 {
-    return (f > 1); 
+    return (f < 1); 
 }
 
 /**
