@@ -69,7 +69,7 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
 
     if (t == e) return t;
 
-    //if (auto comp = checkComputedTable(i,t,e); comp != -1) return computedTable[comp].result;
+    if (auto comp = checkComputedTable(i,t,e); comp != -1) return comp;
 
     BDD_ID tv = topVar(i);
     tv = (!isConstant(t) && topVar(t) < tv) ? topVar(t) : tv;
@@ -82,7 +82,7 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
 
     BDD_ID r = findOrAdd(tv, rLow, rHigh);
 
-    // addToComputedTable(i,t,e,r);
+    addToComputedTable(i,t,e,r);
 
     return r;
 }

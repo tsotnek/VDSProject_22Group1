@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     ClassProject::BDD_ID c = m.createVar("c");
     ClassProject::BDD_ID d = m.createVar("d");
 
-    ClassProject::BDD_ID f = m.and2(m.or2(a,b),m.and2(c,d));
+    ClassProject::BDD_ID f = m.and2(m.and2(c,d),m.or2(a,b));
 
     PrintUniqueTable(m);
 }
