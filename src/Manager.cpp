@@ -36,7 +36,7 @@ const BDD_ID &Manager::False()
  */
 bool Manager::isConstant(BDD_ID f) 
 {
-    return (f == True() && f == False()); 
+    return (f == True() || f == False()); 
 }
 
 /**
@@ -66,7 +66,7 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
 
     BDD_ID tv = topVar(i);
     tv = (!isConstant(t) && topVar(t) < tv) ? topVar(t) : tv;
-    tv = (!isConstant(e) && topVar(t) < tv) ? topVar(e) : tv;
+    tv = (!isConstant(e) && topVar(e) < tv) ? topVar(e) : tv;
 
     BDD_ID rHigh = ite(coFactorTrue(i, tv), coFactorTrue(t, tv), coFactorTrue(e, tv));
     BDD_ID rLow = ite(coFactorFalse(i, tv), coFactorFalse(t, tv), coFactorFalse(e, tv));
@@ -177,12 +177,12 @@ BDD_ID Manager::getLow(BDD_ID a)
  * @param b id of low successor
  * @param c id of high successor
  */
-BDD_ID Manager::findOrAdd(BDD_ID a, BDD_ID b, BDD_ID c)
+BDD_ID Manager::findOrAdd(BDD_ID tv, BDD_ID low, BDD_ID high)
 {
     for (int i = 0; i < uniqueTableSize(); i++)
-        if (uniqueTable[i].topVar == a && uniqueTable[i].high == b && uniqueTable[i].low == c) return i;
+        if (uniqueTable[i].topVar == tv && uniqueTable[i].high == high && uniqueTable[i].low == low) return i;
 
-    uniqueTable.push_back(unique_table_entry {b, c, a, std::to_string(uniqueTableSize())});
+    uniqueTable.push_back(unique_table_entry {low, high, tv, std::to_string(uniqueTableSize())});
     return uniqueTableSize() - 1;
 }
 
@@ -217,7 +217,4 @@ Manager::Manager(void)
     uniqueTable.push_back(unique_table_entry {1,1,1,"True"});
 }
 
-Manager::~Manager() 
-{
-    std::cout << "Manager class destroyed!" << std::endl; 
-}
+Manager::~Manager() { }

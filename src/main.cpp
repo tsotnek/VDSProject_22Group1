@@ -12,11 +12,19 @@ int main(int argc, char* argv[])
     std::cout << "Nothing implemented, yet" << std::endl;
 
     ClassProject::Manager testObj;
+
     testObj.createVar("a");
     testObj.createVar("b");
     testObj.createVar("c");
     testObj.createVar("d");
-    //ClassProject::BDD_ID f = testObj.and2(testObj.or2(2,3),testObj.and2(4,5));
+
+
+    ClassProject::BDD_ID f = testObj.and2(testObj.or2(2,3),testObj.and2(4,5));
+
+    for (int i = 0; i < testObj.uniqueTableSize(); i++)
+    {
+        std::cout << testObj.uniqueTable[i].low << testObj.uniqueTable[i].high << testObj.uniqueTable[i].topVar  << std::endl;
+    }
 
     std::cout << f << std:: endl;
 }
