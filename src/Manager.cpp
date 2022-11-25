@@ -62,7 +62,8 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
     if (i == False()) return e;
     if (i == True()) return t;
 
-    // TODO: check computed table
+    BDD_ID comp  = checkComputedTable(i,t,e);
+    if (comp != -1) return computedTable[comp].result;
 
     BDD_ID tv = topVar(i);
     tv = (!isConstant(t) && topVar(t) < tv) ? topVar(t) : tv;
@@ -75,7 +76,7 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
 
     BDD_ID r = findOrAdd(tv, rLow, rHigh);
 
-    // TODO: add to computed table
+    addToComputedTable(i,t,e,r);
 
     return r;
 }
@@ -184,6 +185,18 @@ BDD_ID Manager::findOrAdd(BDD_ID tv, BDD_ID low, BDD_ID high)
 
     uniqueTable.push_back(unique_table_entry {low, high, tv, std::to_string(uniqueTableSize())});
     return uniqueTableSize() - 1;
+}
+
+BDD_ID Manager::checkComputedTable(BDD_ID f, BDD_ID g, BDD_ID h)
+{
+    for (auto item : computedTable)
+        if(item.f == f && item.g == g && item.h == h) return item.result;
+    return -1;
+}
+
+void Manager::addToComputedTable(BDD_ID f, BDD_ID g, BDD_ID h, BDD_ID r)
+{
+    computedTable.push_back(computed_table_entry {f, g, h, r});
 }
 
 /**

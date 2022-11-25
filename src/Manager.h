@@ -20,9 +20,17 @@ namespace ClassProject {
         std::string label;
     };
 
+    struct computed_table_entry {
+        BDD_ID f;
+        BDD_ID g;
+        BDD_ID h;
+        BDD_ID result;
+    };
+
     class Manager: public ManagerInterface {
         public:
             std::vector<unique_table_entry> uniqueTable;
+            std::vector<computed_table_entry> computedTable;
 
             BDD_ID createVar(const std::string &label) override;
 
@@ -65,6 +73,10 @@ namespace ClassProject {
             BDD_ID getLow(BDD_ID a);
 
             BDD_ID findOrAdd(BDD_ID a, BDD_ID b, BDD_ID c);
+
+            BDD_ID checkComputedTable(BDD_ID f, BDD_ID g, BDD_ID h);
+
+            void addToComputedTable(BDD_ID f, BDD_ID g, BDD_ID h, BDD_ID r);
 
             std::string getTopVarName(const BDD_ID &root) override;
 
