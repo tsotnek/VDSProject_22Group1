@@ -117,22 +117,40 @@ BDD_ID Manager::coFactorFalse(BDD_ID f)
     return coFactorFalse(f, topVar(f));
 }
 
-BDD_ID Manager::neg(BDD_ID a) { return 0; }
+BDD_ID Manager::neg(BDD_ID a) 
+{
+    return ite(a, False(), True());
+}
 
-BDD_ID Manager::and2(BDD_ID a, BDD_ID b) { return 0; }
+BDD_ID Manager::and2(BDD_ID a, BDD_ID b) 
+{ 
+    return ite(a,b,False());
+}
 
 BDD_ID Manager::or2(BDD_ID a, BDD_ID b) 
 {
     return ite(a,True(),b);
 }
 
-BDD_ID Manager::xor2(BDD_ID a, BDD_ID b) { return 0; }
+BDD_ID Manager::xor2(BDD_ID a, BDD_ID b) 
+{
+    return ite(a, neg(b), b);
+}
 
-BDD_ID Manager::nand2(BDD_ID a, BDD_ID b) { return 0; }
+BDD_ID Manager::nand2(BDD_ID a, BDD_ID b) 
+{
+    return neg(and2(a, b));
+}
 
-BDD_ID Manager::nor2(BDD_ID a, BDD_ID b) { return 0; }
+BDD_ID Manager::nor2(BDD_ID a, BDD_ID b) 
+{
+    return neg(or2(a, b));
+}
 
-BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b) { return 0; }
+BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b) 
+{
+    return neg(xor2(a, b));
+}
 
 /**
  * Returns high result of id
@@ -152,6 +170,13 @@ BDD_ID Manager::getLow(BDD_ID a)
     return uniqueTable[a].low;
 }
 
+/**
+ * Checks if matching entry exists in unique table, if not creates one
+ * Returns id of entry
+ * @param a id of topvar
+ * @param b id of low successor
+ * @param c id of high successor
+ */
 BDD_ID Manager::findOrAdd(BDD_ID a, BDD_ID b, BDD_ID c)
 {
     for (int i = 0; i < uniqueTableSize(); i++)
