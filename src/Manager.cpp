@@ -36,7 +36,7 @@ const BDD_ID &Manager::False()
  */
 bool Manager::isConstant(BDD_ID f) 
 {
-    return (f < 1); 
+    return (f == True() && f == False()); 
 }
 
 /**
@@ -62,25 +62,60 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
     if (i == False()) return e;
     if (i == True()) return t;
 
+    // TODO: check computed table
+
     BDD_ID tv = topVar(i);
     tv = (!isConstant(t) && topVar(t) < tv) ? topVar(t) : tv;
     tv = (!isConstant(e) && topVar(t) < tv) ? topVar(e) : tv;
 
-    return 0;
+    BDD_ID rHigh = ite(coFactorTrue(i, tv), coFactorTrue(t, tv), coFactorTrue(e, tv));
+    BDD_ID rLow = ite(coFactorFalse(i, tv), coFactorFalse(t, tv), coFactorFalse(e, tv));
+
+    if (rHigh == rLow) return rHigh;
+
+    BDD_ID r = findOrAdd(tv, rLow, rHigh);
+
+    // TODO: add to computed table
+
+    return r;
 }
 
+/**
+ * Returns positive cofactor of an expression with respect to a specified variable
+ * @param f id of expression
+ * @param x id of variable
+ */
 BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x) 
 {
-    if (f == x) return uniqueTable[f].high;
+    if (isConstant(f)) return f;
+    if (topVar(f) == x) return getHigh(f);
 
-    return 0;
+    BDD_ID T = coFactorTrue(getHigh(f), x);
+    BDD_ID F = coFactorTrue(getLow(f), x);
+
+    return ite(topVar(f),T,F);
 }
 
-BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x) { return 0; }
+BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x) 
+{
+    if (isConstant(f)) return f;
+    if (topVar(f) == x) return getLow(f);
 
-BDD_ID Manager::coFactorTrue(BDD_ID f)  { return 0; }
+    BDD_ID T = coFactorFalse(getHigh(f), x);
+    BDD_ID F = coFactorFalse(getLow(f), x);
 
-BDD_ID Manager::coFactorFalse(BDD_ID f) { return 0; }
+    return ite(topVar(f), T, F);
+}
+
+BDD_ID Manager::coFactorTrue(BDD_ID f)  
+{
+    return coFactorTrue(f, topVar(f));
+}
+
+BDD_ID Manager::coFactorFalse(BDD_ID f) 
+{
+    return coFactorFalse(f, topVar(f));
+}
 
 BDD_ID Manager::neg(BDD_ID a) { return 0; }
 
@@ -98,6 +133,33 @@ BDD_ID Manager::nand2(BDD_ID a, BDD_ID b) { return 0; }
 BDD_ID Manager::nor2(BDD_ID a, BDD_ID b) { return 0; }
 
 BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b) { return 0; }
+
+/**
+ * Returns high result of id
+ * @param a id to be evaluated
+ */
+BDD_ID Manager::getHigh(BDD_ID a)
+{
+    return uniqueTable[a].high;
+}
+
+/**
+ * Returns low result of id
+ * @param a id to be evaluated
+ */
+BDD_ID Manager::getLow(BDD_ID a)
+{
+    return uniqueTable[a].low;
+}
+
+BDD_ID Manager::findOrAdd(BDD_ID a, BDD_ID b, BDD_ID c)
+{
+    for (int i = 0; i < uniqueTableSize(); i++)
+        if (uniqueTable[i].topVar == a && uniqueTable[i].high == b && uniqueTable[i].low == c) return i;
+
+    uniqueTable.push_back(unique_table_entry {b, c, a, std::to_string(uniqueTableSize())});
+    return uniqueTableSize() - 1;
+}
 
 /**
  * Returns label of top variable of id

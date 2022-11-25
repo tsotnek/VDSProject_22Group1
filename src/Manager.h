@@ -60,6 +60,12 @@ namespace ClassProject {
 
             BDD_ID xnor2(BDD_ID a, BDD_ID b) override;
 
+            BDD_ID getHigh(BDD_ID a);
+
+            BDD_ID getLow(BDD_ID a);
+
+            BDD_ID findOrAdd(BDD_ID a, BDD_ID b, BDD_ID c);
+
             std::string getTopVarName(const BDD_ID &root) override;
 
             void findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root) override;
