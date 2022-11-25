@@ -22,21 +22,16 @@ void PrintUniqueTable(Manager &object);
 
 int main(int argc, char* argv[])
 {
-    cout << "Nothing implemented, yet" << endl;
+    ClassProject::Manager m;
 
-    Manager testObj;
+    ClassProject::BDD_ID a = m.createVar("a");
+    ClassProject::BDD_ID b = m.createVar("b");
+    ClassProject::BDD_ID c = m.createVar("c");
+    ClassProject::BDD_ID d = m.createVar("d");
 
-    testObj.createVar("a");
-    testObj.createVar("b");
-    testObj.createVar("c");
-    testObj.createVar("d");
+    ClassProject::BDD_ID f = m.and2(m.or2(a,b),m.and2(c,d));
 
-
-    BDD_ID f = testObj.and2(testObj.or2(2,3),testObj.and2(4,5));
-
-#ifdef UNIQUE_PRINT_ENABLE
-    PrintUniqueTable(testObj);
-#endif
+    PrintUniqueTable(m);
 }
 
 
@@ -46,13 +41,14 @@ int main(int argc, char* argv[])
 
 void PrintUniqueTable(Manager &object)
 {
-    cout << "\n\n-------------------------------------------------------\n\n";
-    cout << "---------------UNIQUE    TABLE-----------------\n\n";
+    //cout << "\n\n-------------------------------------------------------\n\n";
+    //cout << "---------------UNIQUE    TABLE-----------------\n\n";
     cout << "| BDD_ID|" << "  Low  |" << " High  |" << " Topvar |" << "Label" << endl;
+    cout << "_______________________________________" << endl;
     size_t BDD_count {0};
     for (auto item : object.uniqueTable)
     {   
-        cout << "_______________________________________" << endl;
+        //cout << "_______________________________________" << endl;
         cout << "|   " << BDD_count++ << "   |   " << item.low << "   |   " << item.high << "   |   " \
         << item.topVar << "    |  " << item.label << endl;
     }

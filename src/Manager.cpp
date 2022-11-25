@@ -4,14 +4,14 @@
 #include "Manager.h"
 
 using namespace ClassProject;
+
 /**
- * Creates a new variable at the end of the unique table
+ * Creates a new variable in the unique table
  * @param label Label for the variable
  */
 BDD_ID Manager::createVar(const std::string &label) 
 {
-    uniqueTable.push_back(unique_table_entry {0,1,uniqueTableSize(),label});
-    return uniqueTable.back().topVar;
+    return createNode(False(),True(),uniqueTableSize(),label);
 }
 
 /**
@@ -40,7 +40,7 @@ bool Manager::isConstant(BDD_ID f)
 }
 
 /**
- * Evaluates if id represents a variable
+ * Evaluates if expression represents a variable
  * @param x id to evaluate
  */
 bool Manager::isVariable(BDD_ID x) 
@@ -49,7 +49,7 @@ bool Manager::isVariable(BDD_ID x)
 }
 
 /**
- * Returns top variable of id
+ * Returns top variable of expression
  * @param id id to evaluate
  */
 BDD_ID Manager::topVar(ClassProject::BDD_ID f) 
@@ -57,13 +57,19 @@ BDD_ID Manager::topVar(ClassProject::BDD_ID f)
     return uniqueTable[f].topVar; 
 }
 
+/**
+ * Returns the result of an if-then-else operation
+ * @param i id of if expression
+ * @param t id of then case
+ * @param e id of else case
+ */
 BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e) 
 {
-    if (i == False()) return e;
-    if (i == True()) return t;
+    if (isConstant(i)) return (i == True()) ? t : e;
 
-    BDD_ID comp  = checkComputedTable(i,t,e);
-    if (comp != -1) return computedTable[comp].result;
+    if (t == e) return t;
+
+    //if (auto comp = checkComputedTable(i,t,e); comp != -1) return computedTable[comp].result;
 
     BDD_ID tv = topVar(i);
     tv = (!isConstant(t) && topVar(t) < tv) ? topVar(t) : tv;
@@ -97,6 +103,11 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x)
     return ite(topVar(f),T,F);
 }
 
+/**
+ * Returns negative cofactor of an expression with respect to a specified variable
+ * @param f id of expression
+ * @param x id of variable
+ */
 BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x) 
 {
     if (isConstant(f)) return f;
@@ -108,53 +119,95 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x)
     return ite(topVar(f), T, F);
 }
 
+/**
+ * Returns positive cofactor of an expression with respect to its top variable
+ * @param f id of expression to be evaluated
+ */
 BDD_ID Manager::coFactorTrue(BDD_ID f)  
 {
     return coFactorTrue(f, topVar(f));
 }
 
+/**
+ * Returns negative cofactor of an expression with respect to its top variable
+ * @param f id of expression to be evaluated
+ */
 BDD_ID Manager::coFactorFalse(BDD_ID f) 
 {
     return coFactorFalse(f, topVar(f));
 }
 
+/**
+ * Returns negation of expression
+ * @param a id of expression to be evaluated
+ */
 BDD_ID Manager::neg(BDD_ID a) 
 {
     return ite(a, False(), True());
 }
 
+/**
+ * Returns result of and operation between two expressions
+ * @param a id of first expression
+ * @param b id of seccond expression
+ */
 BDD_ID Manager::and2(BDD_ID a, BDD_ID b) 
 { 
     return ite(a,b,False());
 }
 
+/**
+ * Returns result of or operation between two expressions
+ * @param a id of first expression
+ * @param b id of seccond expression
+ */
 BDD_ID Manager::or2(BDD_ID a, BDD_ID b) 
 {
     return ite(a,True(),b);
 }
 
+/**
+ * Returns result of xor operation between two expressions
+ * @param a id of first expression
+ * @param b id of seccond expression
+ */
 BDD_ID Manager::xor2(BDD_ID a, BDD_ID b) 
 {
     return ite(a, neg(b), b);
 }
 
+/**
+ * Returns result of nand operation between two expressions
+ * @param a id of first expression
+ * @param b id of seccond expression
+ */
 BDD_ID Manager::nand2(BDD_ID a, BDD_ID b) 
 {
     return neg(and2(a, b));
 }
 
+/**
+ * Returns result of nor operation between two expressions
+ * @param a id of first expression
+ * @param b id of seccond expression
+ */
 BDD_ID Manager::nor2(BDD_ID a, BDD_ID b) 
 {
     return neg(or2(a, b));
 }
 
+/**
+ * Returns result of xnor operation between two expressions
+ * @param a id of first expression
+ * @param b id of seccond expression
+ */
 BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b) 
 {
     return neg(xor2(a, b));
 }
 
 /**
- * Returns high result of id
+ * Returns low successor of node
  * @param a id to be evaluated
  */
 BDD_ID Manager::getHigh(BDD_ID a)
@@ -163,7 +216,7 @@ BDD_ID Manager::getHigh(BDD_ID a)
 }
 
 /**
- * Returns low result of id
+ * Returns low successor of node
  * @param a id to be evaluated
  */
 BDD_ID Manager::getLow(BDD_ID a)
@@ -174,19 +227,25 @@ BDD_ID Manager::getLow(BDD_ID a)
 /**
  * Checks if matching entry exists in unique table, if not creates one
  * Returns id of entry
- * @param a id of topvar
- * @param b id of low successor
- * @param c id of high successor
+ * @param tv id of topvar
+ * @param low id of low successor
+ * @param high id of high successor
  */
 BDD_ID Manager::findOrAdd(BDD_ID tv, BDD_ID low, BDD_ID high)
 {
     for (int i = 0; i < uniqueTableSize(); i++)
         if (uniqueTable[i].topVar == tv && uniqueTable[i].high == high && uniqueTable[i].low == low) return i;
 
-    uniqueTable.push_back(unique_table_entry {low, high, tv, std::to_string(uniqueTableSize())});
-    return uniqueTableSize() - 1;
+    return createNode(low, high, tv, std::to_string(uniqueTableSize()));;
 }
 
+/**
+ * Evaluates if expression has already been computed
+ * Returns id if expression exists, else -1
+ * @param f id of if expression
+ * @param g id of then expression
+ * @param h id of else expression
+ */
 BDD_ID Manager::checkComputedTable(BDD_ID f, BDD_ID g, BDD_ID h)
 {
     for (auto item : computedTable)
@@ -194,13 +253,20 @@ BDD_ID Manager::checkComputedTable(BDD_ID f, BDD_ID g, BDD_ID h)
     return -1;
 }
 
+/**
+ * Adds an expression to the computed table
+ * @param f id of if expression
+ * @param g id of then expression
+ * @param h id of else expression
+ * @param r id of result
+ */
 void Manager::addToComputedTable(BDD_ID f, BDD_ID g, BDD_ID h, BDD_ID r)
 {
     computedTable.push_back(computed_table_entry {f, g, h, r});
 }
 
 /**
- * Returns label of top variable of id
+ * Returns label of top variable of expression
  * @param root id to be evaluated
  */
 std::string Manager::getTopVarName(const BDD_ID &root) 
@@ -222,12 +288,25 @@ size_t Manager::uniqueTableSize()
 }
 
 /**
+ * Creates a node in the unique table and returns its id
+ * @param l id of low successor
+ * @param h id of high successor
+ * @param tv id of top variable
+ * @param label label of node
+ */
+BDD_ID Manager::createNode(BDD_ID l, BDD_ID h, BDD_ID tv, std::string label)
+{
+    uniqueTable.push_back(unique_table_entry {l,h,tv,label});
+    return uniqueTableSize() - 1;
+}
+
+/**
  * Constructor creates entries for the "True" and "False" cases in the unique table
  */
 Manager::Manager(void)
 {
-    uniqueTable.push_back(unique_table_entry {0,0,0,"False"});
-    uniqueTable.push_back(unique_table_entry {1,1,1,"True"});
+    createNode(0,0,0,"False");
+    createNode(1,1,1,"True");
 }
 
 Manager::~Manager() { }
