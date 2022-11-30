@@ -40,6 +40,7 @@ TEST_F(managerTest, uniqueTableSizeTest)
 
 TEST_F(managerTest, isConstantTest)
 {
+    runExpression();
     for (ClassProject::BDD_ID i = 0; i < testObj.uniqueTableSize(); i++) 
     {
         bool res = (i == testObj.False() || i == testObj.True());
@@ -56,6 +57,28 @@ TEST_F(managerTest, isVariableTest)
         bool res = (item.label == "a" || item.label == "c" || item.label == "b" || item.label == "d");
         ASSERT_EQ(testObj.isVariable(i++), res) << "Incorrect assertion for isVariable";
     }
+}
+
+TEST_F(managerTest, and2Test)
+{
+    ClassProject::BDD_ID AandB = testObj.and2(a,b);
+    ASSERT_EQ(testObj.uniqueTable[AandB].low, testObj.False());
+    ASSERT_EQ(testObj.uniqueTable[AandB].high, b);
+}
+
+TEST_F(managerTest, or2Test)
+{
+    ClassProject::BDD_ID AorB = testObj.or2(a,b);
+    ASSERT_EQ(testObj.uniqueTable[AorB].low, b);
+    ASSERT_EQ(testObj.uniqueTable[AorB].high, testObj.True());
+}
+
+TEST_F(managerTest, negTest)
+{
+    ClassProject::BDD_ID AandB = testObj.and2(a,b);
+    ClassProject::BDD_ID negAandB = testObj.neg(AandB);
+    ASSERT_EQ(testObj.uniqueTable[negAandB].low, testObj.True()) << "Incorrect result for neg";
+    ASSERT_EQ(testObj.uniqueTable[negAandB].high, testObj.neg(b)) << "Incorrect result for neg";
 }
 
 int main(int argc, char* argv[])
