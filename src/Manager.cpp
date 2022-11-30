@@ -19,7 +19,7 @@ BDD_ID Manager::createVar(const std::string &label)
  */
 const BDD_ID &Manager::True() 
 {
-    return uniqueTable[1].topVar; 
+    return TrueID;
 }
 
 /**
@@ -27,7 +27,7 @@ const BDD_ID &Manager::True()
  */
 const BDD_ID &Manager::False() 
 { 
-    return uniqueTable[0].topVar; 
+    return FalseID; 
 }
 
 /**
@@ -45,7 +45,7 @@ bool Manager::isConstant(BDD_ID f)
  */
 bool Manager::isVariable(BDD_ID x) 
 {
-    return (topVar(x) == x);
+    return (topVar(x) == x && x != True() && x != False());
 }
 
 /**
@@ -305,8 +305,8 @@ BDD_ID Manager::createNode(BDD_ID l, BDD_ID h, BDD_ID tv, std::string label)
  */
 Manager::Manager(void)
 {
-    createNode(0,0,0,"False");
-    createNode(1,1,1,"True");
+    FalseID = createNode(0,0,0,"False");
+    TrueID = createNode(1,1,1,"True");
 }
 
 Manager::~Manager() { }

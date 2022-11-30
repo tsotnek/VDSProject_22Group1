@@ -1,7 +1,3 @@
-// A minimalistic BDD library, following Wolfgang Kunz lecture slides
-//
-// Created by Markus Wedler 2014
-
 #ifndef VDSPROJECT_MANAGER_H
 #define VDSPROJECT_MANAGER_H
 
@@ -81,6 +77,10 @@ namespace ClassProject {
             ~Manager();
         
         private:
+            BDD_ID TrueID;
+
+            BDD_ID FalseID;
+
             BDD_ID getHigh(BDD_ID a);
 
             BDD_ID getLow(BDD_ID a);
