@@ -79,7 +79,7 @@ TEST_F(managerTest, xor2Test)
     ASSERT_EQ(testObj.uniqueTable[AxorB].low, b);
     ASSERT_EQ(testObj.uniqueTable[AxorB].high, testObj.neg(b));
 }
-/*
+
 TEST_F(managerTest, negTest)
 {
     ClassProject::BDD_ID AandB = testObj.and2(a,b);
@@ -87,7 +87,7 @@ TEST_F(managerTest, negTest)
     ASSERT_EQ(testObj.uniqueTable[negAandB].low, testObj.True()) << "Incorrect result for neg";
     ASSERT_EQ(testObj.uniqueTable[negAandB].high, testObj.neg(b)) << "Incorrect result for neg";
 }
-
+/*
 TEST_F(managerTest, topVarTest)
 {
     runExpression();

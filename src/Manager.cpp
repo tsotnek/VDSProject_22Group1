@@ -143,7 +143,7 @@ BDD_ID Manager::coFactorFalse(BDD_ID f)
  */
 BDD_ID Manager::neg(BDD_ID a) 
 {
-    return setLabel(ite(a, False(), True()),"~(" + uniqueTable[a].label + ")");
+    //return setLabel(ite(a, False(), True()),"~(" + uniqueTable[a].label + ")");
 }
 
 /**
