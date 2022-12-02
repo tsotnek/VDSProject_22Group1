@@ -153,7 +153,7 @@ BDD_ID Manager::neg(BDD_ID a)
  */
 BDD_ID Manager::and2(BDD_ID a, BDD_ID b) 
 { 
-    //return setLabel(ite(a,b,False()),uniqueTable[a].label + "*" + uniqueTable[b].label);
+    return setLabel(ite(a,b,False()),uniqueTable[a].label + "*" + uniqueTable[b].label);
 }
 
 /**
