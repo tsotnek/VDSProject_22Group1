@@ -173,7 +173,7 @@ BDD_ID Manager::or2(BDD_ID a, BDD_ID b)
  */
 BDD_ID Manager::xor2(BDD_ID a, BDD_ID b) 
 {
-    //return setLabel(ite(a, neg(b), b),"(" + uniqueTable[a].label + "^" + uniqueTable[b].label + ")");
+    return setLabel(ite(a, neg(b), b),"(" + uniqueTable[a].label + "^" + uniqueTable[b].label + ")");
 }
 
 /**
