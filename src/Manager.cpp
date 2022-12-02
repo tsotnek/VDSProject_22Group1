@@ -54,7 +54,7 @@ bool Manager::isVariable(BDD_ID x)
  */
 BDD_ID Manager::topVar(ClassProject::BDD_ID f) 
 {
-    return uniqueTable[f].topVar; 
+    //return uniqueTable[f].topVar; 
 }
 
 /**

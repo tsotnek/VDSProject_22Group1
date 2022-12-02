@@ -87,7 +87,7 @@ TEST_F(managerTest, negTest)
     ASSERT_EQ(testObj.uniqueTable[negAandB].low, testObj.True()) << "Incorrect result for neg";
     ASSERT_EQ(testObj.uniqueTable[negAandB].high, testObj.neg(b)) << "Incorrect result for neg";
 }
-/*
+
 TEST_F(managerTest, topVarTest)
 {
     runExpression();
@@ -100,7 +100,7 @@ TEST_F(managerTest, topVarTest)
     ASSERT_EQ(testObj.topVar(9), 2);
     ASSERT_EQ(testObj.getTopVarName(9), "a");
 }
-*/
+
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
