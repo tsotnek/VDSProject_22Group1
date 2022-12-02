@@ -37,7 +37,7 @@ TEST_F(managerTest, uniqueTableSizeTest)
     ClassProject::BDD_ID testVar = testObj.createVar("testVar");
     ASSERT_EQ(testObj.uniqueTableSize(), preSize + 1) << "Incorrect assertion for size";
 }
-/*
+
 TEST_F(managerTest, isConstantTest)
 {
     runExpression();
@@ -47,7 +47,7 @@ TEST_F(managerTest, isConstantTest)
         ASSERT_EQ(testObj.isConstant(i), res) << "Incorrect assertion for isConstant";
     }
 }
-
+/*
 TEST_F(managerTest, isVariableTest)
 {
     runExpression();

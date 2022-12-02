@@ -36,7 +36,7 @@ const BDD_ID &Manager::False()
  */
 bool Manager::isConstant(BDD_ID f) 
 {
-    return (f == True() || f == False()); 
+    //return (f == True() || f == False()); 
 }
 
 /**
