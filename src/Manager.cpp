@@ -11,7 +11,7 @@ using namespace ClassProject;
  */
 BDD_ID Manager::createVar(const std::string &label) 
 {
-    //return createNode(False(),True(),uniqueTableSize(),label);
+    return createNode(False(),True(),uniqueTableSize(),label);
 }
 
 /**
