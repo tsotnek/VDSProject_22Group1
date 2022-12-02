@@ -47,7 +47,7 @@ TEST_F(managerTest, isConstantTest)
         ASSERT_EQ(testObj.isConstant(i), res) << "Incorrect assertion for isConstant";
     }
 }
-/*
+
 TEST_F(managerTest, isVariableTest)
 {
     runExpression();
@@ -58,7 +58,7 @@ TEST_F(managerTest, isVariableTest)
         ASSERT_EQ(testObj.isVariable(i++), res) << "Incorrect assertion for isVariable";
     }
 }
-
+/*
 TEST_F(managerTest, and2Test)
 {
     ClassProject::BDD_ID AandB = testObj.and2(a,b);
