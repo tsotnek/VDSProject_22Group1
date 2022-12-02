@@ -15,7 +15,7 @@ class managerTest : public ::testing::Test
 
         ClassProject::BDD_ID runExpression()
         {
-            return testObj.and2(testObj.and2(c,d),testObj.or2(a,b));
+            return testObj.and2(testObj.or2(a,b),testObj.and2(c,d));
         }
 };      
 
@@ -73,12 +73,32 @@ TEST_F(managerTest, or2Test)
     ASSERT_EQ(testObj.uniqueTable[AorB].high, testObj.True());
 }
 
+TEST_F(managerTest, xor2Test)
+{
+    ClassProject::BDD_ID AxorB = testObj.xor2(a,b);
+    ASSERT_EQ(testObj.uniqueTable[AxorB].low, b);
+    ASSERT_EQ(testObj.uniqueTable[AxorB].high, testObj.neg(b));
+}
+
 TEST_F(managerTest, negTest)
 {
     ClassProject::BDD_ID AandB = testObj.and2(a,b);
     ClassProject::BDD_ID negAandB = testObj.neg(AandB);
     ASSERT_EQ(testObj.uniqueTable[negAandB].low, testObj.True()) << "Incorrect result for neg";
     ASSERT_EQ(testObj.uniqueTable[negAandB].high, testObj.neg(b)) << "Incorrect result for neg";
+}
+
+TEST_F(managerTest, topVarTest)
+{
+    runExpression();
+    ASSERT_EQ(testObj.topVar(6), 4);
+    ASSERT_EQ(testObj.getTopVarName(6), "c");
+    ASSERT_EQ(testObj.topVar(7), 2);
+    ASSERT_EQ(testObj.getTopVarName(7), "a");
+    ASSERT_EQ(testObj.topVar(8), 3);
+    ASSERT_EQ(testObj.getTopVarName(8), "b");
+    ASSERT_EQ(testObj.topVar(9), 2);
+    ASSERT_EQ(testObj.getTopVarName(9), "a");
 }
 
 int main(int argc, char* argv[])

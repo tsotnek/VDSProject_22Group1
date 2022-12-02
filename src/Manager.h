@@ -91,6 +91,8 @@ namespace ClassProject {
 
             BDD_ID createNode(BDD_ID l, BDD_ID h, BDD_ID tv, std::string label);
 
+            BDD_ID setLabel(BDD_ID t, std::string l);
+
             void addToComputedTable(BDD_ID f, BDD_ID g, BDD_ID h, BDD_ID r);
     };
 }

@@ -143,7 +143,7 @@ BDD_ID Manager::coFactorFalse(BDD_ID f)
  */
 BDD_ID Manager::neg(BDD_ID a) 
 {
-    return ite(a, False(), True());
+    return setLabel(ite(a, False(), True()),"~(" + uniqueTable[a].label + ")");
 }
 
 /**
@@ -153,7 +153,7 @@ BDD_ID Manager::neg(BDD_ID a)
  */
 BDD_ID Manager::and2(BDD_ID a, BDD_ID b) 
 { 
-    return ite(a,b,False());
+    return setLabel(ite(a,b,False()),uniqueTable[a].label + "*" + uniqueTable[b].label);
 }
 
 /**
@@ -163,7 +163,7 @@ BDD_ID Manager::and2(BDD_ID a, BDD_ID b)
  */
 BDD_ID Manager::or2(BDD_ID a, BDD_ID b) 
 {
-    return ite(a,True(),b);
+    return setLabel(ite(a,True(),b),"(" + uniqueTable[a].label + "+" + uniqueTable[b].label + ")");
 }
 
 /**
@@ -173,7 +173,7 @@ BDD_ID Manager::or2(BDD_ID a, BDD_ID b)
  */
 BDD_ID Manager::xor2(BDD_ID a, BDD_ID b) 
 {
-    return ite(a, neg(b), b);
+    return setLabel(ite(a, neg(b), b),"(" + uniqueTable[a].label + "^" + uniqueTable[b].label + ")");
 }
 
 /**
@@ -298,6 +298,17 @@ BDD_ID Manager::createNode(BDD_ID l, BDD_ID h, BDD_ID tv, std::string label)
 {
     uniqueTable.push_back(unique_table_entry {l,h,tv,label});
     return uniqueTableSize() - 1;
+}
+
+/**
+ * Sets the label of a given node
+ * @param t id of expression (is also returned)
+ * @param l new label
+ */
+BDD_ID Manager::setLabel(BDD_ID t, std::string l)
+{
+    uniqueTable[t].label = l;
+    return t;
 }
 
 /**
