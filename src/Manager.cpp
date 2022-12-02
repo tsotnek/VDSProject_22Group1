@@ -163,7 +163,7 @@ BDD_ID Manager::and2(BDD_ID a, BDD_ID b)
  */
 BDD_ID Manager::or2(BDD_ID a, BDD_ID b) 
 {
-    return setLabel(ite(a,True(),b),"(" + uniqueTable[a].label + "+" + uniqueTable[b].label + ")");
+    //return setLabel(ite(a,True(),b),"(" + uniqueTable[a].label + "+" + uniqueTable[b].label + ")");
 }
 
 /**

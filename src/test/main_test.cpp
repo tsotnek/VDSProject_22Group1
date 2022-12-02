@@ -65,14 +65,14 @@ TEST_F(managerTest, and2Test)
     ASSERT_EQ(testObj.uniqueTable[AandB].low, testObj.False());
     ASSERT_EQ(testObj.uniqueTable[AandB].high, b);
 }
-/*
+
 TEST_F(managerTest, or2Test)
 {
     ClassProject::BDD_ID AorB = testObj.or2(a,b);
     ASSERT_EQ(testObj.uniqueTable[AorB].low, b);
     ASSERT_EQ(testObj.uniqueTable[AorB].high, testObj.True());
 }
-
+/*
 TEST_F(managerTest, xor2Test)
 {
     ClassProject::BDD_ID AxorB = testObj.xor2(a,b);
