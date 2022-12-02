@@ -45,7 +45,7 @@ bool Manager::isConstant(BDD_ID f)
  */
 bool Manager::isVariable(BDD_ID x) 
 {
-    //return (topVar(x) == x && x != True() && x != False());
+    return (topVar(x) == x && x != True() && x != False());
 }
 
 /**
