@@ -24,7 +24,7 @@ TEST_F(managerTest, constructorTest)
     ASSERT_EQ(testObj.uniqueTable[testObj.False()].label, "False") << "Unique table does not contain false on construction";
     ASSERT_EQ(testObj.uniqueTable[testObj.True()].label, "True") << "Unique table does not contain true on construction";
 }
-
+/*
 TEST_F(managerTest, createVarTest)
 {
     ClassProject::BDD_ID testVar = testObj.createVar("testVar");
@@ -100,7 +100,7 @@ TEST_F(managerTest, topVarTest)
     ASSERT_EQ(testObj.topVar(9), 2);
     ASSERT_EQ(testObj.getTopVarName(9), "a");
 }
-
+*/
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
