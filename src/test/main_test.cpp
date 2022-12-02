@@ -24,13 +24,13 @@ TEST_F(managerTest, constructorTest)
     ASSERT_EQ(testObj.uniqueTable[testObj.False()].label, "False") << "Unique table does not contain false on construction";
     ASSERT_EQ(testObj.uniqueTable[testObj.True()].label, "True") << "Unique table does not contain true on construction";
 }
-/*
+
 TEST_F(managerTest, createVarTest)
 {
     ClassProject::BDD_ID testVar = testObj.createVar("testVar");
     ASSERT_EQ(testObj.uniqueTable[testVar].label, "testVar") << "Incorrect creation of variable";
 }
-
+/*
 TEST_F(managerTest, uniqueTableSizeTest)
 {
     size_t preSize = testObj.uniqueTableSize();
