@@ -316,8 +316,8 @@ BDD_ID Manager::setLabel(BDD_ID t, std::string l)
  */
 Manager::Manager(void)
 {
-    //FalseID = createNode(0,0,0,"False");
-    //TrueID = createNode(1,1,1,"True");
+    FalseID = createNode(0,0,0,"False");
+    TrueID = createNode(1,1,1,"True");
 }
 
 Manager::~Manager() { }
