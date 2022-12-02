@@ -284,7 +284,7 @@ void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root) { }
  */
 size_t Manager::uniqueTableSize() 
 {
-    return uniqueTable.size();
+    //return uniqueTable.size();
 }
 
 /**
