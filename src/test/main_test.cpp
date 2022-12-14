@@ -13,7 +13,7 @@ class managerTest : public ::testing::Test
             d = testObj.createVar("d");
         }
 
-        ClassProject::BDD_ID runExpression()
+        ClassProject::BDD_ID expression_1()
         {
             return testObj.and2(testObj.or2(a,b),testObj.and2(c,d));
         }
@@ -21,14 +21,14 @@ class managerTest : public ::testing::Test
 
 TEST_F(managerTest, constructorTest)
 {
-    ASSERT_EQ(testObj.uniqueTable[testObj.False()].label, "False") << "Unique table does not contain false on construction";
-    ASSERT_EQ(testObj.uniqueTable[testObj.True()].label, "True") << "Unique table does not contain true on construction";
+    ASSERT_EQ(testObj.getLabel(testObj.False()), "False") << "Unique table does not contain false on construction";
+    ASSERT_EQ(testObj.getLabel(testObj.True()), "True") << "Unique table does not contain true on construction";
 }
 
 TEST_F(managerTest, createVarTest)
 {
     ClassProject::BDD_ID testVar = testObj.createVar("testVar");
-    ASSERT_EQ(testObj.uniqueTable[testVar].label, "testVar") << "Incorrect creation of variable";
+    ASSERT_EQ(testObj.getLabel(testVar), "testVar") << "Incorrect creation of variable";
 }
 
 TEST_F(managerTest, uniqueTableSizeTest)
@@ -40,7 +40,7 @@ TEST_F(managerTest, uniqueTableSizeTest)
 
 TEST_F(managerTest, isConstantTest)
 {
-    runExpression();
+    expression_1();
     for (ClassProject::BDD_ID i = 0; i < testObj.uniqueTableSize(); i++) 
     {
         bool res = (i == testObj.False() || i == testObj.True());
@@ -50,47 +50,46 @@ TEST_F(managerTest, isConstantTest)
 
 TEST_F(managerTest, isVariableTest)
 {
-    runExpression();
-    ClassProject::BDD_ID i = 0;
-    for (auto item : testObj.uniqueTable)
+    expression_1();
+    for (ClassProject::BDD_ID i = 0; i < testObj.uniqueTableSize(); i++)
     {
-        bool res = (item.label == "a" || item.label == "c" || item.label == "b" || item.label == "d");
-        ASSERT_EQ(testObj.isVariable(i++), res) << "Incorrect assertion for isVariable";
+        bool res = (i == a || i == b || i == c || i == d);
+        ASSERT_EQ(testObj.isVariable(i), res) << "Incorrect assertion for isVariable";
     }
 }
 
 TEST_F(managerTest, and2Test)
 {
     ClassProject::BDD_ID AandB = testObj.and2(a,b);
-    ASSERT_EQ(testObj.uniqueTable[AandB].low, testObj.False());
-    ASSERT_EQ(testObj.uniqueTable[AandB].high, b);
+    ASSERT_EQ(testObj.lowSuccesor(AandB), testObj.False());
+    ASSERT_EQ(testObj.highSuccesor(AandB), b);
 }
 
 TEST_F(managerTest, or2Test)
 {
     ClassProject::BDD_ID AorB = testObj.or2(a,b);
-    ASSERT_EQ(testObj.uniqueTable[AorB].low, b);
-    ASSERT_EQ(testObj.uniqueTable[AorB].high, testObj.True());
+    ASSERT_EQ(testObj.lowSuccesor(AorB), b);
+    ASSERT_EQ(testObj.highSuccesor(AorB), testObj.True());
 }
 
 TEST_F(managerTest, xor2Test)
 {
     ClassProject::BDD_ID AxorB = testObj.xor2(a,b);
-    ASSERT_EQ(testObj.uniqueTable[AxorB].low, b);
-    ASSERT_EQ(testObj.uniqueTable[AxorB].high, testObj.neg(b));
+    ASSERT_EQ(testObj.lowSuccesor(AxorB), b);
+    ASSERT_EQ(testObj.highSuccesor(AxorB), testObj.neg(b));
 }
 
 TEST_F(managerTest, negTest)
 {
     ClassProject::BDD_ID AandB = testObj.and2(a,b);
     ClassProject::BDD_ID negAandB = testObj.neg(AandB);
-    ASSERT_EQ(testObj.uniqueTable[negAandB].low, testObj.True()) << "Incorrect result for neg";
-    ASSERT_EQ(testObj.uniqueTable[negAandB].high, testObj.neg(b)) << "Incorrect result for neg";
+    ASSERT_EQ(testObj.lowSuccesor(negAandB), testObj.True()) << "Incorrect result for neg";
+    ASSERT_EQ(testObj.highSuccesor(negAandB), testObj.neg(b)) << "Incorrect result for neg";
 }
 
 TEST_F(managerTest, topVarTest)
 {
-    runExpression();
+    expression_1();
     ASSERT_EQ(testObj.topVar(6), 4);
     ASSERT_EQ(testObj.getTopVarName(6), "c");
     ASSERT_EQ(testObj.topVar(7), 2);

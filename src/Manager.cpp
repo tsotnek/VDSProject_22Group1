@@ -1,6 +1,3 @@
-#include <vector>
-#include <string>
-#include <iostream>
 #include "Manager.h"
 
 using namespace ClassProject;
@@ -95,10 +92,10 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
 BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x) 
 {
     if (isConstant(f)) return f;
-    if (topVar(f) == x) return getHigh(f);
+    if (topVar(f) == x) return highSuccesor(f);
 
-    BDD_ID T = coFactorTrue(getHigh(f), x);
-    BDD_ID F = coFactorTrue(getLow(f), x);
+    BDD_ID T = coFactorTrue(highSuccesor(f), x);
+    BDD_ID F = coFactorTrue(lowSuccesor(f), x);
 
     return ite(topVar(f),T,F);
 }
@@ -111,10 +108,10 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x)
 BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x) 
 {
     if (isConstant(f)) return f;
-    if (topVar(f) == x) return getLow(f);
+    if (topVar(f) == x) return lowSuccesor(f);
 
-    BDD_ID T = coFactorFalse(getHigh(f), x);
-    BDD_ID F = coFactorFalse(getLow(f), x);
+    BDD_ID T = coFactorFalse(highSuccesor(f), x);
+    BDD_ID F = coFactorFalse(lowSuccesor(f), x);
 
     return ite(topVar(f), T, F);
 }
@@ -143,7 +140,7 @@ BDD_ID Manager::coFactorFalse(BDD_ID f)
  */
 BDD_ID Manager::neg(BDD_ID a) 
 {
-    return setLabel(ite(a, False(), True()),"~(" + uniqueTable[a].label + ")");
+    return ite(a, False(), True());
 }
 
 /**
@@ -153,7 +150,7 @@ BDD_ID Manager::neg(BDD_ID a)
  */
 BDD_ID Manager::and2(BDD_ID a, BDD_ID b) 
 { 
-    return setLabel(ite(a,b,False()),uniqueTable[a].label + "*" + uniqueTable[b].label);
+    return ite(a,b,False());
 }
 
 /**
@@ -163,7 +160,7 @@ BDD_ID Manager::and2(BDD_ID a, BDD_ID b)
  */
 BDD_ID Manager::or2(BDD_ID a, BDD_ID b) 
 {
-    return setLabel(ite(a,True(),b),"(" + uniqueTable[a].label + "+" + uniqueTable[b].label + ")");
+    return ite(a,True(),b);
 }
 
 /**
@@ -173,7 +170,7 @@ BDD_ID Manager::or2(BDD_ID a, BDD_ID b)
  */
 BDD_ID Manager::xor2(BDD_ID a, BDD_ID b) 
 {
-    return setLabel(ite(a, neg(b), b),"(" + uniqueTable[a].label + "^" + uniqueTable[b].label + ")");
+    return ite(a, neg(b), b);
 }
 
 /**
@@ -210,7 +207,7 @@ BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b)
  * Returns low successor of node
  * @param a id to be evaluated
  */
-BDD_ID Manager::getHigh(BDD_ID a)
+BDD_ID Manager::highSuccesor(BDD_ID a)
 {
     return uniqueTable[a].high;
 }
@@ -219,7 +216,7 @@ BDD_ID Manager::getHigh(BDD_ID a)
  * Returns low successor of node
  * @param a id to be evaluated
  */
-BDD_ID Manager::getLow(BDD_ID a)
+BDD_ID Manager::lowSuccesor(BDD_ID a)
 {
     return uniqueTable[a].low;
 }
@@ -301,14 +298,12 @@ BDD_ID Manager::createNode(BDD_ID l, BDD_ID h, BDD_ID tv, std::string label)
 }
 
 /**
- * Sets the label of a given node
- * @param t id of expression (is also returned)
- * @param l new label
+ * Returns label of a unique table entry
+ * @param f id to be evaluated
  */
-BDD_ID Manager::setLabel(BDD_ID t, std::string l)
+std::string Manager::getLabel(BDD_ID f)
 {
-    uniqueTable[t].label = l;
-    return t;
+    return uniqueTable[f].label;
 }
 
 /**

@@ -25,9 +25,6 @@ namespace ClassProject {
 
     class Manager: public ManagerInterface {
         public:
-            std::vector<unique_table_entry> uniqueTable;
-            std::vector<computed_table_entry> computedTable;
-
             BDD_ID createVar(const std::string &label) override;
 
             const BDD_ID &True() override;
@@ -72,6 +69,12 @@ namespace ClassProject {
 
             size_t uniqueTableSize() override;
 
+            BDD_ID highSuccesor(BDD_ID a);
+
+            BDD_ID lowSuccesor(BDD_ID a);
+
+            std::string getLabel(BDD_ID f);
+
             Manager(void);
 
             ~Manager();
@@ -81,17 +84,15 @@ namespace ClassProject {
 
             BDD_ID FalseID;
 
-            BDD_ID getHigh(BDD_ID a);
+            std::vector<unique_table_entry> uniqueTable;
 
-            BDD_ID getLow(BDD_ID a);
+            std::vector<computed_table_entry> computedTable;
 
             BDD_ID findOrAdd(BDD_ID a, BDD_ID b, BDD_ID c);
 
             BDD_ID checkComputedTable(BDD_ID f, BDD_ID g, BDD_ID h);
 
             BDD_ID createNode(BDD_ID l, BDD_ID h, BDD_ID tv, std::string label);
-
-            BDD_ID setLabel(BDD_ID t, std::string l);
 
             void addToComputedTable(BDD_ID f, BDD_ID g, BDD_ID h, BDD_ID r);
     };
