@@ -63,9 +63,6 @@ BDD_ID Manager::topVar(ClassProject::BDD_ID f)
 BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e) 
 {
     if (isConstant(i)) return (i == True()) ? t : e;
-
-    if (t == e) return t;
-
     if (auto comp = checkComputedTable(i,t,e); comp != -1) return comp;
 
     BDD_ID tv = topVar(i);
@@ -78,7 +75,6 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
     if (rHigh == rLow) return rHigh;
 
     BDD_ID r = findOrAdd(tv, rLow, rHigh);
-
     addToComputedTable(i,t,e,r);
 
     return r;
@@ -230,7 +226,7 @@ BDD_ID Manager::lowSuccesor(BDD_ID a)
  */
 BDD_ID Manager::findOrAdd(BDD_ID tv, BDD_ID low, BDD_ID high)
 {
-    for (int i = 0; i < uniqueTableSize(); i++)
+    for (BDD_ID i = 0; i < uniqueTableSize(); i++)
         if (uniqueTable[i].topVar == tv && uniqueTable[i].high == high && uniqueTable[i].low == low) return i;
 
     return createNode(low, high, tv, std::to_string(uniqueTableSize()));;
@@ -268,12 +264,32 @@ void Manager::addToComputedTable(BDD_ID f, BDD_ID g, BDD_ID h, BDD_ID r)
  */
 std::string Manager::getTopVarName(const BDD_ID &root) 
 {
-    return uniqueTable[uniqueTable[root].topVar].label;
+    return getLabel(uniqueTable[root].topVar);
 }
 
-void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root) { }
+/**
+ * Finds the set of nodes which are reachable from a given node
+ * @param root id to be evaluated
+ * @param nodes_of_root empty set which will recive result of function
+ */ 
+void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root)
+{
+    nodes_of_root.insert(root);
+    if (!nodes_of_root.count(lowSuccesor(root))) findNodes(lowSuccesor(root), nodes_of_root);
+    if (!nodes_of_root.count(highSuccesor(root))) findNodes(highSuccesor(root), nodes_of_root);
+}
 
-void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root) { }
+/**
+ * Finds the set of variables which are reachable from a given node
+ * @param root id to be evaluated
+ * @param vars_of_root empty set which will recive result of function
+ */
+void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root)
+{
+    std::set<BDD_ID> nodes;
+    findNodes(root, nodes);
+    for (auto node : nodes) if (!isConstant(node)) vars_of_root.insert(topVar(node));
+}
 
 
 /**
