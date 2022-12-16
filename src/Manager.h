@@ -81,9 +81,9 @@ namespace ClassProject {
 
             std::vector<unique_table_entry> uniqueTable;
 
-            std::unordered_map<std::string, BDD_ID> computedTable;
+            std::unordered_map<size_t, BDD_ID> computedTable;
 
-            std::unordered_map<std::string, BDD_ID> uniqueTableMap;
+            std::unordered_map<size_t, BDD_ID> uniqueTableMap;
 
             BDD_ID findOrAdd(BDD_ID a, BDD_ID b, BDD_ID c);
 

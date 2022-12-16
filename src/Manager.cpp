@@ -228,15 +228,9 @@ BDD_ID Manager::lowSuccesor(BDD_ID a)
  */
 BDD_ID Manager::findOrAdd(BDD_ID tv, BDD_ID low, BDD_ID high)
 {
-    std::string key = getLabel(tv) + getLabel(low) + getLabel(high);
-    try
-    {
-        return uniqueTableMap.at(key);
-    }
-    catch (const std::out_of_range& e)
-    {
-        return createNode(low, high, tv, std::to_string(uniqueTableSize()));
-    }
+    size_t key = (((tv << 21) + low) << 21) + high;
+    if (uniqueTableMap.count(key)) return uniqueTableMap[key];
+    return createNode(low, high, tv, "");
 }
 
 /**
@@ -248,15 +242,9 @@ BDD_ID Manager::findOrAdd(BDD_ID tv, BDD_ID low, BDD_ID high)
  */
 BDD_ID Manager::checkComputedTable(BDD_ID f, BDD_ID g, BDD_ID h)
 {
-    std::string key = getLabel(f) + getLabel(g) + getLabel(h);
-    try
-    {
-        return computedTable.at(key);
-    }
-    catch (const std::out_of_range& e)
-    {
-        return -1;
-    }
+    size_t key = (((f << 21) + g) << 21) + h;
+    if (computedTable.count(key)) return computedTable[key];
+    return -1;
 }
 
 /**
@@ -268,7 +256,7 @@ BDD_ID Manager::checkComputedTable(BDD_ID f, BDD_ID g, BDD_ID h)
  */
 void Manager::addToComputedTable(BDD_ID f, BDD_ID g, BDD_ID h, BDD_ID r)
 {
-    std::string key = getLabel(f) + getLabel(g) + getLabel(h);
+    size_t key = (((f << 21) + g) << 21) + h;
     computedTable[key] = r;
 }
 
@@ -293,7 +281,7 @@ void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root)
     if (!nodes_of_root.count(highSuccesor(root))) findNodes(highSuccesor(root), nodes_of_root);
 }
 
-/**
+/** 
  * Finds the set of variables which are reachable from a given node
  * @param root id to be evaluated
  * @param vars_of_root empty set which will recive result of function
@@ -324,8 +312,8 @@ size_t Manager::uniqueTableSize()
 BDD_ID Manager::createNode(BDD_ID l, BDD_ID h, BDD_ID tv, std::string label)
 {
     uniqueTable.push_back(unique_table_entry {l,h,tv,label});
-    std::string key = getLabel(tv) + getLabel(l) + getLabel(h);
-    uniqueTableMap[key] = uniqueTableSize() - 1;
+    size_t key = (((tv << 21) + l) << 21) + h;
+    uniqueTableMap.emplace(key, uniqueTableSize() - 1);
     return uniqueTableSize() - 1;
 }
 
