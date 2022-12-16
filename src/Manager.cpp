@@ -1,5 +1,7 @@
 #include "Manager.h"
 
+#include <stdexcept>
+
 using namespace ClassProject;
 
 /**
@@ -226,10 +228,15 @@ BDD_ID Manager::lowSuccesor(BDD_ID a)
  */
 BDD_ID Manager::findOrAdd(BDD_ID tv, BDD_ID low, BDD_ID high)
 {
-    for (BDD_ID i = 0; i < uniqueTableSize(); i++)
-        if (uniqueTable[i].topVar == tv && uniqueTable[i].high == high && uniqueTable[i].low == low) return i;
-
-    return createNode(low, high, tv, std::to_string(uniqueTableSize()));;
+    std::string key = getLabel(tv) + getLabel(low) + getLabel(high);
+    try
+    {
+        return uniqueTableMap.at(key);
+    }
+    catch (const std::out_of_range& e)
+    {
+        return createNode(low, high, tv, std::to_string(uniqueTableSize()));
+    }
 }
 
 /**
@@ -241,9 +248,15 @@ BDD_ID Manager::findOrAdd(BDD_ID tv, BDD_ID low, BDD_ID high)
  */
 BDD_ID Manager::checkComputedTable(BDD_ID f, BDD_ID g, BDD_ID h)
 {
-    for (auto item : computedTable)
-        if(item.f == f && item.g == g && item.h == h) return item.result;
-    return -1;
+    std::string key = getLabel(f) + getLabel(g) + getLabel(h);
+    try
+    {
+        return computedTable.at(key);
+    }
+    catch (const std::out_of_range& e)
+    {
+        return -1;
+    }
 }
 
 /**
@@ -255,7 +268,8 @@ BDD_ID Manager::checkComputedTable(BDD_ID f, BDD_ID g, BDD_ID h)
  */
 void Manager::addToComputedTable(BDD_ID f, BDD_ID g, BDD_ID h, BDD_ID r)
 {
-    computedTable.push_back(computed_table_entry {f, g, h, r});
+    std::string key = getLabel(f) + getLabel(g) + getLabel(h);
+    computedTable[key] = r;
 }
 
 /**
@@ -264,7 +278,7 @@ void Manager::addToComputedTable(BDD_ID f, BDD_ID g, BDD_ID h, BDD_ID r)
  */
 std::string Manager::getTopVarName(const BDD_ID &root) 
 {
-    return getLabel(uniqueTable[root].topVar);
+    return getLabel(topVar(root));
 }
 
 /**
@@ -310,6 +324,8 @@ size_t Manager::uniqueTableSize()
 BDD_ID Manager::createNode(BDD_ID l, BDD_ID h, BDD_ID tv, std::string label)
 {
     uniqueTable.push_back(unique_table_entry {l,h,tv,label});
+    std::string key = getLabel(tv) + getLabel(l) + getLabel(h);
+    uniqueTableMap[key] = uniqueTableSize() - 1;
     return uniqueTableSize() - 1;
 }
 

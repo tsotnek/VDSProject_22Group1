@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <map>
+#include <unordered_map>
 
 #include "ManagerInterface.h"
 
@@ -14,13 +16,6 @@ namespace ClassProject {
         BDD_ID high;
         BDD_ID topVar;
         std::string label;
-    };
-
-    struct computed_table_entry {
-        BDD_ID f;
-        BDD_ID g;
-        BDD_ID h;
-        BDD_ID result;
     };
 
     class Manager: public ManagerInterface {
@@ -86,7 +81,9 @@ namespace ClassProject {
 
             std::vector<unique_table_entry> uniqueTable;
 
-            std::vector<computed_table_entry> computedTable;
+            std::unordered_map<std::string, BDD_ID> computedTable;
+
+            std::unordered_map<std::string, BDD_ID> uniqueTableMap;
 
             BDD_ID findOrAdd(BDD_ID a, BDD_ID b, BDD_ID c);
 
