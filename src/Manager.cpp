@@ -1,7 +1,5 @@
 #include "Manager.h"
 
-#include <stdexcept>
-
 using namespace ClassProject;
 
 /**
@@ -65,7 +63,7 @@ BDD_ID Manager::topVar(ClassProject::BDD_ID f)
 BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e) 
 {
     if (isConstant(i)) return (i == True()) ? t : e;
-    if (auto comp = checkComputedTable(i,t,e); comp != -1) return comp;
+    if (computedTable.find(key_gen(i,t,e)) != computedTable.end()) return computedTable.at(key_gen(i,t,e));
     if (t == e) return t;
 
     BDD_ID tv = topVar(i);
@@ -78,7 +76,7 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
     if (rHigh == rLow) return rHigh;
 
     BDD_ID r = findOrAdd(tv, rLow, rHigh);
-    addToComputedTable(i,t,e,r);
+    computedTable.emplace(key_gen(i,t,e), r);
 
     return r;
 }
@@ -229,36 +227,9 @@ BDD_ID Manager::lowSuccesor(BDD_ID a)
  */
 BDD_ID Manager::findOrAdd(BDD_ID tv, BDD_ID low, BDD_ID high)
 {
-    size_t key = (((tv << 21) + low) << 21) + high;
-    if (uniqueTableMap.count(key)) return uniqueTableMap[key];
+    size_t key = key_gen(tv, low, high);
+    if (uniqueTableMap.find(key) != uniqueTableMap.end()) return uniqueTableMap.at(key);
     return createNode(low, high, tv, "");
-}
-
-/**
- * Evaluates if expression has already been computed
- * Returns id if expression exists, else -1
- * @param f id of if expression
- * @param g id of then expression
- * @param h id of else expression
- */
-BDD_ID Manager::checkComputedTable(BDD_ID f, BDD_ID g, BDD_ID h)
-{
-    size_t key = (((f << 21) + g) << 21) + h;
-    if (computedTable.count(key)) return computedTable[key];
-    return -1;
-}
-
-/**
- * Adds an expression to the computed table
- * @param f id of if expression
- * @param g id of then expression
- * @param h id of else expression
- * @param r id of result
- */
-void Manager::addToComputedTable(BDD_ID f, BDD_ID g, BDD_ID h, BDD_ID r)
-{
-    size_t key = (((f << 21) + g) << 21) + h;
-    computedTable[key] = r;
 }
 
 /**
@@ -313,8 +284,7 @@ size_t Manager::uniqueTableSize()
 BDD_ID Manager::createNode(BDD_ID l, BDD_ID h, BDD_ID tv, std::string label)
 {
     uniqueTable.push_back(unique_table_entry {l,h,tv,label});
-    size_t key = (((tv << 21) + l) << 21) + h;
-    uniqueTableMap.emplace(key, uniqueTableSize() - 1);
+    uniqueTableMap.emplace(key_gen(tv,l,h), uniqueTableSize() - 1);
     return uniqueTableSize() - 1;
 }
 
@@ -325,6 +295,11 @@ BDD_ID Manager::createNode(BDD_ID l, BDD_ID h, BDD_ID tv, std::string label)
 std::string Manager::getLabel(BDD_ID f)
 {
     return uniqueTable[f].label;
+}
+
+size_t Manager::key_gen(BDD_ID a, BDD_ID b, BDD_ID c)
+{
+    return (((a << 21) + b) << 21) + c;
 }
 
 /**

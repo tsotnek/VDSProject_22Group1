@@ -86,11 +86,9 @@ namespace ClassProject {
 
             BDD_ID findOrAdd(BDD_ID a, BDD_ID b, BDD_ID c);
 
-            BDD_ID checkComputedTable(BDD_ID f, BDD_ID g, BDD_ID h);
-
             BDD_ID createNode(BDD_ID l, BDD_ID h, BDD_ID tv, std::string label);
 
-            void addToComputedTable(BDD_ID f, BDD_ID g, BDD_ID h, BDD_ID r);
+            size_t key_gen(BDD_ID a, BDD_ID b, BDD_ID c);
     };
 }
 
