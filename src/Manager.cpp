@@ -76,7 +76,7 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
     if (rHigh == rLow) return rHigh;
 
     BDD_ID r = findOrAdd(tv, rLow, rHigh);
-    computedTable.emplace(key_gen(i,t,e), r);
+    computedTable.insert({key_gen(i,t,e), r});
 
     return r;
 }
@@ -249,8 +249,8 @@ std::string Manager::getTopVarName(const BDD_ID &root)
 void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root)
 {
     nodes_of_root.insert(root);
-    if (!nodes_of_root.count(lowSuccesor(root))) findNodes(lowSuccesor(root), nodes_of_root);
-    if (!nodes_of_root.count(highSuccesor(root))) findNodes(highSuccesor(root), nodes_of_root);
+    if (nodes_of_root.find(lowSuccesor(root)) == nodes_of_root.end()) findNodes(lowSuccesor(root), nodes_of_root);
+    if (nodes_of_root.find(highSuccesor(root)) == nodes_of_root.end()) findNodes(highSuccesor(root), nodes_of_root);
 }
 
 /** 
@@ -284,7 +284,7 @@ size_t Manager::uniqueTableSize()
 BDD_ID Manager::createNode(BDD_ID l, BDD_ID h, BDD_ID tv, std::string label)
 {
     uniqueTable.push_back(unique_table_entry {l,h,tv,label});
-    uniqueTableMap.emplace(key_gen(tv,l,h), uniqueTableSize() - 1);
+    uniqueTableMap.insert({key_gen(tv,l,h), uniqueTableSize() - 1});
     return uniqueTableSize() - 1;
 }
 
