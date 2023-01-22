@@ -1,24 +1,39 @@
 #include "Manager.h"
+#include "reachability/Reachability.h"
 
 #include <iostream>
 
+using std::cout;
+using std::endl;
+using std::vector;
+
+using ClassProject::Reachability;
 using ClassProject::Manager;
 using ClassProject::BDD_ID;
 
 int main(int argc, char* argv[])
 {
-    Manager m;
+    Reachability fsm(2);
+    vector<BDD_ID> transitionFunctions;
 
-    BDD_ID a = m.createVar("a");
-    BDD_ID b = m.createVar("b");
-    BDD_ID c = m.createVar("c");
-    BDD_ID d = m.createVar("d");
+    vector<BDD_ID> states = fsm.getStates();
 
-    BDD_ID f = m.and2(m.and2(c,d),m.or2(a,b));
+    transitionFunctions.push_back(fsm.neg(states.at(0)));
+    transitionFunctions.push_back(fsm.neg(states.at(1)));
 
-    std::set<BDD_ID> nodes;
-    std::set<BDD_ID> vars;
+    fsm.setTransitionFunctions(transitionFunctions);
 
-    m.findNodes(f, nodes);
-    m.findVars(f, vars);
+    vector<bool> initState = {true, false};
+    fsm.setInitState(initState);
+
+    cout << "ID, High, Low, Top Var, Label" << endl;
+    for (BDD_ID i = 0; i < fsm.uniqueTableSize(); i++)
+    {
+        cout << i << ", " << fsm.highSuccesor(i) << ", " << fsm.lowSuccesor(i) << ", " 
+            << fsm.topVar(i) << ", " << fsm.getLabel(i) << endl;
+    }
+    cout << "R: " << fsm.isReachable({false,false}) << endl;
+    cout << "R: " << fsm.isReachable({false,true}) << endl;
+    cout << "R: " << fsm.isReachable({true,false}) << endl;
+    cout << "R: " << fsm.isReachable({true,true}) << endl;
 }

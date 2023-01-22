@@ -11,9 +11,15 @@ namespace ClassProject {
         
             std::vector<BDD_ID> states;
 
+            std::vector<BDD_ID> nstates;
+
             std::vector<BDD_ID> transitions;
 
             std::vector<bool> initialState;
+
+            BDD_ID charcteristic_function;
+
+            void symbolic_compute_reachable_states();
 
         public:
 
@@ -26,6 +32,8 @@ namespace ClassProject {
             void setInitState(const std::vector<bool> &stateVector) override;
 
             explicit Reachability(unsigned int stateSize);
+
+            ~Reachability();
     };
 
 };

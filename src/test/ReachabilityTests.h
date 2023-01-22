@@ -2,7 +2,7 @@
 #define VDSPROJECT_REACHABILITY_TESTS_H
 
 #include <gtest/gtest.h>
-#include "Reachability.h"
+#include "../reachability/Reachability.h"
 
 using namespace ClassProject;
 

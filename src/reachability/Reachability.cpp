@@ -1,7 +1,5 @@
 #include "Reachability.h"
 
-#include <algorithm>
-
 using namespace ClassProject;
 
 const std::vector<BDD_ID> &Reachability::getStates() const
@@ -14,6 +12,20 @@ bool Reachability::isReachable(const std::vector<bool> &stateVector)
     if (stateVector.size() != states.size())
         std::__throw_runtime_error("Incorrect size");
     
+    if (initialState.size() != states.size())
+        std::__throw_runtime_error("Missing initial state");
+
+    if (transitions.size() != states.size())
+        std::__throw_runtime_error("Missing transition functions");
+
+    BDD_ID r = charcteristic_function;
+    while (r != False() && r != True())
+    {
+        size_t i = 0;
+        while (states.at(i) != topVar(r)) i++;
+        r = (stateVector.at(i)) ? coFactorTrue(r) : coFactorFalse(r);
+    }
+    return (r == True());
 }
 
 void Reachability::setTransitionFunctions(const std::vector<BDD_ID> &transitionFunctions) 
@@ -21,19 +33,63 @@ void Reachability::setTransitionFunctions(const std::vector<BDD_ID> &transitionF
     if (transitionFunctions.size() != states.size())
         std::__throw_runtime_error("Incorrect size");
     transitions = transitionFunctions;
+
+    if (initialState.size() == transitions.size()) symbolic_compute_reachable_states();
 }
 
 void Reachability::setInitState(const std::vector<bool> &stateVector) 
 {
     if (stateVector.size() != states.size())
-        std::__throw_runtime_error("Incorrect size");
+         std::__throw_runtime_error("Incorrect size");
     initialState = stateVector;
+
+    if (initialState.size() == transitions.size()) symbolic_compute_reachable_states();
 }
 
-explicit Reachability::Reachability(unsigned int stateSize) : ReachabilityInterface::ReachabilityInterface(stateSize)
+Reachability::Reachability(unsigned int stateSize) : ReachabilityInterface::ReachabilityInterface(stateSize)
 {
     if (stateSize == 0)
         std::__throw_runtime_error("Size cannot be zero");
     for (unsigned int i = 0; i < stateSize; i++ )
         states.push_back(createVar("s" + std::to_string(i)));
+    for (unsigned int i = 0; i < stateSize; i++ )
+        nstates.push_back(createVar("s'" + std::to_string(i)));
+}
+
+Reachability::~Reachability() { }
+
+void Reachability::symbolic_compute_reachable_states()
+{
+    // Compute transition relation
+    BDD_ID t = or2(and2(nstates.at(0),transitions.at(0)),nor2(nstates.at(0),transitions.at(0)));
+    for (size_t i = 1; i < states.size(); i++)
+        t = and2(t, or2(and2(nstates.at(i),transitions.at(i)),nor2(nstates.at(i),transitions.at(i))));
+
+    // Compute caracteristic function of initial state 
+    BDD_ID C_r = xnor2(states.at(0), (initialState.at(0)) ? True() : False());
+    for (size_t i = 1; i < states.size(); i++) 
+        C_r = and2(C_r, xnor2(states.at(i), (initialState.at(i)) ? True() : False()));
+
+    BDD_ID C_rit = C_r; // Itterator for characteristic function
+
+    do {
+        C_r = C_rit;
+        // Compute img(S')
+        BDD_ID img_sp = and2(C_r, t);
+        for (size_t i = states.size() - 1; i != SIZE_MAX; i--)
+            img_sp = or2(coFactorTrue(img_sp, states.at(i)), coFactorFalse(img_sp, states.at(i)));
+
+        // Compute img(S)
+        BDD_ID img_s = xnor2(states.at(0), nstates.at(0));
+        for (size_t i = 1; i < states.size(); i++)
+            img_s = and2(img_s, xnor2(states.at(i), nstates.at(i)));
+        img_s = and2(img_s, img_sp);
+        for (size_t i = states.size() - 1; i != SIZE_MAX; i--)
+            img_s = or2(coFactorTrue(img_s, nstates.at(i)), coFactorFalse(img_s, nstates.at(i)));
+
+        C_rit = or2(C_r, img_s);
+
+    } while(C_r != C_rit);
+
+    charcteristic_function = C_r;
 }
