@@ -19,12 +19,15 @@ bool Reachability::isReachable(const std::vector<bool> &stateVector)
         std::__throw_runtime_error("Missing transition functions");
 
     BDD_ID r = charcteristic_function;
-    while (r != False() && r != True())
-    {
-        size_t i = 0;
-        while (states.at(i) != topVar(r)) i++;
-        r = (stateVector.at(i)) ? coFactorTrue(r) : coFactorFalse(r);
-    }
+    for (size_t i = 0; i < states.size(); i++)
+         r = (stateVector.at(i)) ? coFactorTrue(r,states.at(i)) : coFactorFalse(r,states.at(i));
+    
+    // Existential quantification of input vars
+    std::set<BDD_ID> vars;
+    findVars(r, vars);
+    for (auto v : vars)
+        r = or2(coFactorTrue(r,v),coFactorFalse(r,v));
+    
     return (r == True());
 }
 
@@ -80,15 +83,13 @@ void Reachability::symbolic_compute_reachable_states()
             img_sp = or2(coFactorTrue(img_sp, states.at(i)), coFactorFalse(img_sp, states.at(i)));
 
         // Compute img(S)
-        BDD_ID img_s = xnor2(states.at(0), nstates.at(0));
+        BDD_ID img_s = and2(xnor2(states.at(0), nstates.at(0)),img_sp);
         for (size_t i = 1; i < states.size(); i++)
             img_s = and2(img_s, xnor2(states.at(i), nstates.at(i)));
-        img_s = and2(img_s, img_sp);
         for (size_t i = states.size() - 1; i != SIZE_MAX; i--)
             img_s = or2(coFactorTrue(img_s, nstates.at(i)), coFactorFalse(img_s, nstates.at(i)));
 
         C_rit = or2(C_r, img_s);
-
     } while(C_r != C_rit);
 
     charcteristic_function = C_r;

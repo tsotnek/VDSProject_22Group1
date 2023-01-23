@@ -34,6 +34,8 @@ namespace ClassProject {
             explicit Reachability(unsigned int stateSize);
 
             ~Reachability();
+
+            BDD_ID getCr() { return charcteristic_function; }
     };
 
 };
