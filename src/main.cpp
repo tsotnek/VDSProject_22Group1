@@ -18,6 +18,7 @@ int main(int argc, char* argv[])
     vector<BDD_ID> transitionFunctions;
     vector<BDD_ID> states = fsm.getStates();
 
+    // Example from lecture 4
     BDD_ID x1 = fsm.createVar("x1");
     BDD_ID x2 = fsm.createVar("x2");
     transitionFunctions.push_back(fsm.and2(fsm.neg(x1), fsm.or2(states.at(0),states.at(1))));

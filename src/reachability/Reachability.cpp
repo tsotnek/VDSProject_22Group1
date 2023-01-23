@@ -1,5 +1,7 @@
 #include "Reachability.h"
 
+#include <algorithm>
+
 using namespace ClassProject;
 
 const std::vector<BDD_ID> &Reachability::getStates() const
@@ -21,13 +23,7 @@ bool Reachability::isReachable(const std::vector<bool> &stateVector)
     BDD_ID r = charcteristic_function;
     for (size_t i = 0; i < states.size(); i++)
          r = (stateVector.at(i)) ? coFactorTrue(r,states.at(i)) : coFactorFalse(r,states.at(i));
-    
-    // Existential quantification of input vars
-    std::set<BDD_ID> vars;
-    findVars(r, vars);
-    for (auto v : vars)
-        r = or2(coFactorTrue(r,v),coFactorFalse(r,v));
-    
+         
     return (r == True());
 }
 
@@ -91,6 +87,13 @@ void Reachability::symbolic_compute_reachable_states()
 
         C_rit = or2(C_r, img_s);
     } while(C_r != C_rit);
+
+    // Existential quantification of inputs
+    std::set<BDD_ID> vars;
+    findVars(C_r, vars);
+    for (auto v : vars)
+        if (std::find(states.begin(), states.end(), v) == states.end())
+            C_r = or2(coFactorTrue(C_r,v),coFactorFalse(C_r,v));
 
     charcteristic_function = C_r;
 }
