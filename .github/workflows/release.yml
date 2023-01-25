@@ -27,4 +27,7 @@ jobs:
 
     - name: Test
       run: ./build/src/test/VDSProject_test
+      
+    - name: Reachability_test
+      run: ./build/src/VDSProject_reachability
 
