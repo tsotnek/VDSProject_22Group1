@@ -29,5 +29,5 @@ jobs:
       run: ./build/src/test/VDSProject_test
       
     - name: Reachability_test
-      run: ./build/src/VDSProject_reachability
+      run: ./build/VDSProject_reachability
 
