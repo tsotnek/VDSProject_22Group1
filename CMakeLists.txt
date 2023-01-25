@@ -51,13 +51,13 @@ include_directories(${CMAKE_SOURCE_DIR}/src/reachability/)
 link_directories(${CMAKE_SOURCE_DIR}/src/reachability/)
 
 add_subdirectory(src)
-add_executable(VDSProject src/main.cpp)
+
+#add_executable(VDSProject src/main.cpp)
+#target_link_libraries(VDSProject Manager Reachability)
 
 add_executable(benchmark src/bench/main_bench.cpp src/bench/BenchmarkLib.cpp src/bench/BenchParser.cpp src/bench/CircuitToBDD.cpp src/Manager.cpp)
 
 add_executable(verify src/verify/main_verify.cpp)
 
 add_executable(VDSProject_reachability src/test/reachability_test.cpp src/reachability/Reachability.cpp src/reachability/Reachability.h src/test/ReachabilityTests.h src/reachability/ReachabilityInterface.h)
-
-target_link_libraries(VDSProject Manager Reachability)
 target_link_libraries(VDSProject_reachability Manager Reachability gtest gtest_main pthread)
