@@ -36,7 +36,7 @@ void Reachability::setTransitionFunctions(const std::vector<BDD_ID> &transitionF
      //throw an exception if one of the provided BDD_IDs is unknown.
     for(size_t i = 0; i < transitions.size(); i++)
     {
-        if(transitions.at(i) > uniqueTableSize()) //check that all transition bdd_ID values are all less than the total uniqueTablesize
+        if(transitions.at(i) >= uniqueTableSize()) //check that all transition bdd_ID values are all less than the total uniqueTablesize
             std::__throw_runtime_error("BDD_IDs is unknown for transition function");
     }
 
