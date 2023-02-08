@@ -42,6 +42,14 @@ void Reachability::setInitState(const std::vector<bool> &stateVector)
          std::__throw_runtime_error("Incorrect size");
     initialState = stateVector;
 
+
+    //check for a size mismatch but it should also throw an exception if one of the provided BDD_IDs is unknown.
+    for(int i= 0; i < transitionFunctions.size(); i++)
+    {
+        if( transitionFunctions.at(i) >= uniqueTableSize() )
+            std::__throw_runtime_error("BDD_IDs is unknown for transition function");
+    }
+
     if (initialState.size() == transitions.size()) symbolic_compute_reachable_states();
 }
 
