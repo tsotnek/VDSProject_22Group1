@@ -53,6 +53,13 @@ Reachability::Reachability(unsigned int stateSize) : ReachabilityInterface::Reac
         states.push_back(createVar("s" + std::to_string(i)));
     for (unsigned int i = 0; i < stateSize; i++ )
         nstates.push_back(createVar("s'" + std::to_string(i)));
+    
+    //initial state bits are set to false
+    std::vector<bool> zerosetter{stateSize, 0};
+    initialState = zerosetter;
+
+    //default transition function is the identity function
+    transitions = states;
 }
 
 Reachability::~Reachability() { }
