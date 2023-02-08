@@ -13,12 +13,8 @@ bool Reachability::isReachable(const std::vector<bool> &stateVector)
 {
     if (stateVector.size() != states.size())
         std::__throw_runtime_error("Incorrect size");
-    
-    if (initialState.size() != states.size())
-        std::__throw_runtime_error("Missing initial state");
 
-    if (transitions.size() != states.size())
-        std::__throw_runtime_error("Missing transition functions");
+    if (changed) symbolic_compute_reachable_states();
 
     BDD_ID r = charcteristic_function;
     for (size_t i = 0; i < states.size(); i++)
@@ -35,12 +31,10 @@ void Reachability::setTransitionFunctions(const std::vector<BDD_ID> &transitionF
 
      //throw an exception if one of the provided BDD_IDs is unknown.
     for(size_t i = 0; i < transitions.size(); i++)
-    {
         if(transitions.at(i) >= uniqueTableSize()) //check that all transition bdd_ID values are all less than the total uniqueTablesize
             std::__throw_runtime_error("BDD_IDs is unknown for transition function");
-    }
 
-    if (initialState.size() == transitions.size()) symbolic_compute_reachable_states();
+    changed = true;
 }
 
 void Reachability::setInitState(const std::vector<bool> &stateVector) 
@@ -50,7 +44,7 @@ void Reachability::setInitState(const std::vector<bool> &stateVector)
     initialState = stateVector;
 
 
-    if (initialState.size() == transitions.size()) symbolic_compute_reachable_states();
+    changed = true;
 }
 
 Reachability::Reachability(unsigned int stateSize) : ReachabilityInterface::ReachabilityInterface(stateSize)
@@ -63,11 +57,13 @@ Reachability::Reachability(unsigned int stateSize) : ReachabilityInterface::Reac
         nstates.push_back(createVar("s'" + std::to_string(i)));
     
     //initial state bits are set to false
-    std::vector<bool> zerosetter{stateSize, 0};
+    std::vector<bool> zerosetter(stateSize, 0);
     initialState = zerosetter;
 
     //default transition function is the identity function
     transitions = states;
+
+    changed = true;
 }
 
 Reachability::~Reachability() { }
@@ -111,4 +107,5 @@ void Reachability::symbolic_compute_reachable_states()
             C_r = or2(coFactorTrue(C_r,v),coFactorFalse(C_r,v));
 
     charcteristic_function = C_r;
+    changed = false;
 }

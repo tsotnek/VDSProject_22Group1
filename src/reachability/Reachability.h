@@ -8,6 +8,8 @@ namespace ClassProject {
     class Reachability : public ReachabilityInterface 
     {
         private:
+
+            bool changed;
         
             std::vector<BDD_ID> states;
 
